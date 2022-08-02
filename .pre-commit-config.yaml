@@ -7,6 +7,10 @@ repos:
             language: system
             types: [python]
             require_serial: true
+          - id: check-added-large-files
+            name: Check for added large files
+            entry: check-added-large-files
+            language: system
           - id: check-toml
             name: Check Toml
             entry: check-toml
