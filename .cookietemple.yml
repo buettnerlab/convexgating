@@ -1,0 +1,20 @@
+cookietemple_version: '1.4.1 # <<COOKIETEMPLE_NO_BUMP>>'
+domain: cli
+language: python
+project_slug: convexgating
+project_slug_no_hyphen: convexgating
+template_version: '2.1.1 # <<COOKIETEMPLE_NO_BUMP>>'
+template_handle: cli-python
+github_username: buettnerlab
+creator_github_username: Vincent2101
+is_github_repo: true
+is_repo_private: false
+is_github_orga: true
+github_orga: buettnerlab
+full_name: Vincent Friedrich
+email: vf2101@online.de
+project_name: convexgating
+project_short_description: ConvexGating is a Python tool to infer optimal gating strategies
+  for flow cytometry and cyTOF data.
+version: 0.1.0
+license: MIT
