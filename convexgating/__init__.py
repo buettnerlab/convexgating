@@ -2,6 +2,11 @@
 # import convexgating
 # from convexgating import helper, plotting, simulation, tools
 
+
+__all__ = ["helper", "plotting", "simulation", "tools"]
+
+
+"""
 __all__ = [
     "adata_to_df_gating",
     "do_adaptive_grid_search",
@@ -84,3 +89,4 @@ __all__ = [
     "FIND_GATING_STRATEGY",
     "process_results",
 ]
+"""
