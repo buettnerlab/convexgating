@@ -40,7 +40,7 @@ pydot = "*"
 python-igraph = "*"
 torch = "==1.7.1"
 tqdm = "*"
-tk = "*"
+#tk = "*"
 
 
 
