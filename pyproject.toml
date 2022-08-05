@@ -38,7 +38,7 @@ scikit-misc = "*"
 umap-learn = "*"
 pydot = "*"
 python-igraph = "*"
-torch = "=1.7.1"
+torch = "==1.7.1"
 tqdm = "*"
 tk = "*"
 
