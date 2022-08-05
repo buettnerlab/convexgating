@@ -149,6 +149,7 @@ def tests(session: Session) -> None:
             session.notify("coverage")
 
 
+'''
 @session
 def coverage(session: Session) -> None:
     """Produce the coverage report."""
@@ -163,6 +164,7 @@ def coverage(session: Session) -> None:
         session.run("coverage", "combine")
 
     session.run("coverage", *args)
+'''
 
 
 @session(python=python_versions)
