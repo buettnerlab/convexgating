@@ -19,11 +19,9 @@ classifiers = [
 ]
 
 dependencies = [
-"python ^3.7.0",
-"click >=8.0.0",
-"rich = >=10.3.0",
-"PyYAML = >=5.4.1",
-"numpy = ==1.19.5",
+"python ^3.7.0","click >=8.0.0","rich >=10.3.0",
+"PyYAML >=5.4.1",
+"numpy ==1.19.5",
 "pandas",
 "seaborn",
 "matplotlib",
@@ -36,7 +34,7 @@ dependencies = [
 "umap-learn",
 "pydot",
 "python-igraph",
-"torch = ==1.7.1",
+"torch ==1.7.1",
 "tqdm",
 "tk"]
 
