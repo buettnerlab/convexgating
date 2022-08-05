@@ -39,7 +39,7 @@ umap-learn = "*"
 pydot = "*"
 python-igraph = "*"
 torch = "==1.7.1"
-tqdm = ">=4.60.0"
+tqdm = "!=4.60.0"
 #tk = "*"
 
 
