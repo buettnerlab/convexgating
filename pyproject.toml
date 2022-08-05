@@ -17,40 +17,30 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
 ]
-
-
-#dependencies = [
-#"python ^3.7.0","click >=8.0.0","rich >=10.3.0",
-#"PyYAML >=5.4.1",
-#"numpy ==1.19.5",
-#"pandas",
-#"seaborn",
-#"matplotlib",
-#"numba",
-#"scanpy >=1.5",
-#"anndata >=0.7.2",
-#"scipy",
-#"scikit-learn",
-#"scikit-misc",
-#"umap-learn",
-#"pydot",
-#"python-igraph",
-#"torch ==1.7.1",
-#"tqdm",
-#"tk"]
-
-
 dependencies = [
-    "nbproject",
-    "numpy",
-    "pandas",
-    "anndata",
-    "scanpy",
-    "scipy",
-    "seaborn",
-    "matplotlib",
-    "readfcs"
-]
+"python ^3.7.0",
+"click >=8.0.0",
+"rich >=10.3.0",
+"PyYAML >=5.4.1",
+"numpy ==1.19.5",
+"pandas",
+"seaborn",
+"matplotlib",
+"numba",
+"scanpy >=1.5",
+"anndata >=0.7.2",
+"scipy",
+"scikit-learn",
+"scikit-misc",
+"umap-learn",
+"pydot",
+"python-igraph",
+"torch ==1.7.1",
+"tqdm",
+"tk"]
+
+
+
 
 
 
