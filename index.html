@@ -85,9 +85,11 @@
 <p><a class="reference external" href="https://pypi.org/project/convexgating/"><img alt="PyPI" src="https://img.shields.io/pypi/v/convexgating.svg" /></a> <a class="reference external" href="https://pypi.org/project/convexgating"><img alt="Python Version" src="https://img.shields.io/pypi/pyversions/convexgating" /></a> <a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/github/license/buettnerlab/convexgating" /></a> <a class="reference external" href="https://convexgating.readthedocs.io/"><img alt="Read the documentation at https://convexgating.readthedocs.io/" src="https://img.shields.io/readthedocs/convexgating/latest.svg?label=Read%20the%20Docs" /></a> <a class="reference external" href="https://github.com/buettnerlab/convexgating/actions?workflow=Package"><img alt="Build Package Status" src="https://github.com/buettnerlab/convexgating/workflows/Build%20convexgating%20Package/badge.svg" /></a> <a class="reference external" href="https://github.com/buettnerlab/convexgating/actions?workflow=Tests"><img alt="Run Tests Status" src="https://github.com/buettnerlab/convexgating/workflows/Run%20convexgating%20Tests/badge.svg" /></a> <a class="reference external" href="https://codecov.io/gh/buettnerlab/convexgating"><img alt="Codecov" src="https://codecov.io/gh/buettnerlab/convexgating/branch/master/graph/badge.svg" /></a> <a class="reference external" href="https://github.com/pre-commit/pre-commit"><img alt="pre-commit" src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&amp;logoColor=white" /></a> <a class="reference external" href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a></p>
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
-<ul class="simple">
-<li><p>TODO</p></li>
-</ul>
+<p>Convex gating is a Python package to infer an optimal gating strategy from flow, cyTOF or Ab/CITE-seq data. Convex gating expects a labelled input (for instance, from clustering) and returns a gating panel to separate the selected group of events (e.g. a cluster) from all other events (see Fig. 1a).
+For each cluster, it reports the purity (precision), yield (recall) and the harmonic mean of both metrics (F1 score) for each gate hierarchy and the entire gating strategy. It relies on the scanpy/anndata for the data format and data pre-processing and further on PyTorch for stochastic gradient descent. Therefore, resulting gates may slightly vary.
+![Overview](./figures/fig1_v4.PNG)
+The iterative procedure to find a suitable gate before applying the convex hull is illustrated in the following graphic.
+![Update_step](./figures/fig_update_step_v5.PNG)</p>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
