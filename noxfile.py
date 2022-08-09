@@ -1,3 +1,30 @@
+from pathlib import Path
+
+import nox
+
+nox.options.reuse_existing_virtualenvs = True
+
+
+@nox.session
+def lint(session: nox.Session) -> None:
+    session.install("pre-commit")
+    session.run("pre-commit", "install")
+    session.run("pre-commit", "run", "--all-files")
+
+
+@nox.session(python=["3.9"])
+def build(session):
+    session.install(".[dev,test]")
+    session.run(
+        "pytest", "-s", "--cov=convexgating", "--cov-append", "--cov-report=term-missing",
+    )
+    session.run("coverage", "xml")
+    prefix = "." if Path("./lndocs").exists() else ".."
+    session.install(f"{prefix}/lndocs")
+    session.run("lndocs")
+
+
+'''
 """Nox sessions."""
 import os
 import shlex
@@ -158,7 +185,7 @@ def tests(session: Session) -> None:
     #        session.notify("coverage")
 
 
-'''
+
 @session
 def coverage(session: Session) -> None:
     """Produce the coverage report."""
@@ -173,7 +200,7 @@ def coverage(session: Session) -> None:
         session.run("coverage", "combine")
 
     session.run("coverage", *args)
-'''
+
 
 
 @session(python=python_versions)
@@ -219,3 +246,4 @@ def docs(session: Session) -> None:
         shutil.rmtree(build_dir)
 
     session.run("sphinx-autobuild", *args)
+'''
