@@ -121,13 +121,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    (
-        master_doc,
-        "convexgating.tex",
-        "convexgating Documentation",
-        "Vincent Friedrich",
-        "manual",
-    ),
+    (master_doc, "convexgating.tex", "convexgating Documentation", "Vincent Friedrich", "manual",),
 ]
 
 
@@ -135,15 +129,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (
-        master_doc,
-        "convexgating",
-        "convexgating Documentation",
-        [author],
-        1,
-    )
-]
+man_pages = [(master_doc, "convexgating", "convexgating Documentation", [author], 1,)]
 
 autodoc_typehints = "description"
 
