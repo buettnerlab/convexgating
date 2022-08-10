@@ -57,7 +57,7 @@ from .plotting import do_HEAT_non_targets, do_HEAT_targets, do_plot_metrics, do_
 warnings.filterwarnings("ignore")
 
 
-def gating_strategy(adata, cluster_numbers, cluster_string, save_path=os.getcwd(), add_noise=False):
+def gating_strategy(adata, cluster_numbers, cluster_string, save_path=os.getcwd(), add_noise=True):
     """
     Learning gating strategy for specific cell clusters.
 
