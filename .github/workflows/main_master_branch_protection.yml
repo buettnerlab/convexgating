@@ -11,10 +11,10 @@ jobs:
         runs-on: ubuntu-latest
         name: Check Target branch
         steps:
-            # PRs to the repository master branch are only ok if coming from any patch or release branch
+            # PRs to the repository master branch are only ok if coming from any development or release branch
             - name: Check PRs
               run: |
-                  { [[ $GITHUB_HEAD_REF = *"release"* ]]; } || [[ $GITHUB_HEAD_REF == *"patch"* ]]
+                  { [[ $GITHUB_HEAD_REF = *"release"* ]]; } || [[ $GITHUB_HEAD_REF == *"development"* ]]
 
             # If the above check failed, post a comment on the PR explaining the failure
             # NOTE - this may not work if the PR is coming from a fork, due to limitations in GitHub actions secrets
