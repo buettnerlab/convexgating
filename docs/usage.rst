@@ -1,9 +1,8 @@
 Usage
 =====
 
-.. currentmodule:: convexgating
+.. code-block:: console
 
-.. add toctree option to make autodoc generate the pages
+    $ gating_strategy(adata, cluster_numbers, cluster_string, save_path=os.getcwd(), add_noise=True)
 
-.. autoclass:: tools
 
