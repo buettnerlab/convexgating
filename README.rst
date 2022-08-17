@@ -39,14 +39,14 @@ Convex gating is a Python package to infer an optimal gating strategy from flow,
 For each cluster, it reports the purity (precision), yield (recall) and the harmonic mean of both metrics (F1 score) for each gate hierarchy and the entire gating strategy. It relies on the scanpy/anndata for the data format and data pre-processing and further on PyTorch for stochastic gradient descent. Therefore, resulting gates may slightly vary.
 
 .. image:: https://github.com/buettnerlab/convexgating/blob/main/figures/fig1_v4.PNG
-   :width: 1000
+   :width: 800
    :alt: overview
 
 The iterative procedure to find a suitable gate before applying the convex hull is illustrated in the following graphic.
 
 
 .. image:: https://github.com/buettnerlab/convexgating/blob/main/figures/fig_update_step_v5.png
-   :width: 1000
+   :width: 800
    :alt: Update
 
 
@@ -64,6 +64,7 @@ Usage
 -----
 
 Please see the `Command-line Reference <Usage_>`_ for details.
+test input 
 
 
 Credits
