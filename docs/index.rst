@@ -10,6 +10,7 @@ Welcome to convexgating's documentation!
    readme
    installation
    usage
+   tutorials
    reference
    contributing
    authors
