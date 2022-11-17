@@ -19,6 +19,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/dark_mode_js/default_dark.js"></script>
         <script src="_static/dark_mode_js/theme_switcher.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -76,8 +77,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>convexgating</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">convexgating</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/readme.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,9 +95,9 @@
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
 <p>Convex gating is a Python package to infer an optimal gating strategy from flow, cyTOF or Ab/CITE-seq data. Convex gating expects a labelled input (for instance, from clustering) and returns a gating panel to separate the selected group of events (e.g. a cluster) from all other events (see Fig. 1a).
 For each cluster, it reports the purity (precision), yield (recall) and the harmonic mean of both metrics (F1 score) for each gate hierarchy and the entire gating strategy. It relies on the scanpy/anndata for the data format and data pre-processing and further on PyTorch for stochastic gradient descent. Therefore, resulting gates may slightly vary.</p>
-<a class="reference internal image-reference" href="https://github.com/buettnerlab/convexgating/blob/main/figures/fig1_v4.PNG"><img alt="overview" src="https://github.com/buettnerlab/convexgating/blob/main/figures/fig1_v4.PNG" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="https://github.com/buettnerlab/convexgating/blob/main/figures/fig1_v4.PNG"><img alt="overview" src="https://github.com/buettnerlab/convexgating/blob/main/figures/fig1_v4.PNG" style="width: 800px;" /></a>
 <p>The iterative procedure to find a suitable gate before applying the convex hull is illustrated in the following graphic.</p>
-<a class="reference internal image-reference" href="https://github.com/buettnerlab/convexgating/blob/main/figures/fig_update_step_v5.png"><img alt="Update" src="https://github.com/buettnerlab/convexgating/blob/main/figures/fig_update_step_v5.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="https://github.com/buettnerlab/convexgating/blob/main/figures/fig_update_step_v5.png"><img alt="Update" src="https://github.com/buettnerlab/convexgating/blob/main/figures/fig_update_step_v5.png" style="width: 800px;" /></a>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
