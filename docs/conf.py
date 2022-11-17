@@ -29,7 +29,6 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_click",
     "sphinx_rtd_dark_mode",
-    "nbsphinx",
 ]
 
 default_dark_mode = True
