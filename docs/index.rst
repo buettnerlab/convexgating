@@ -12,6 +12,7 @@ Welcome to convexgating's documentation!
    usage
    tutorials/cg_toy_example
    tutorials/cg_toy_example_advanced
+   tutorials/cg_toy_example_kmeans
    reference
    contributing
    authors
