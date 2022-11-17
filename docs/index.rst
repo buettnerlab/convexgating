@@ -10,7 +10,8 @@ Welcome to convexgating's documentation!
    readme
    installation
    usage
-   tutorials
+   tutorials/cg_toy_example
+   tutorials/cg_toy_example_advanced
    reference
    contributing
    authors
