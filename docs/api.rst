@@ -15,7 +15,7 @@ Import Scanpy as:
 
 Then use it
 
-.. automodule:: template
+.. automodule:: convexgating
     :members:
     :undoc-members:
     :inherited-members:
