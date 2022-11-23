@@ -11,6 +11,7 @@ Welcome to convexgating's documentation!
    installation
    usage
    tutorials
+   api
    reference
    contributing
    authors
