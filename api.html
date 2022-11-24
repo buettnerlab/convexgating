@@ -7,6 +7,7 @@
   <title>API &mdash; convexgating 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom_cookietemple.css" type="text/css" />
       <link rel="stylesheet" href="_static/dark_mode_css/general.css" type="text/css" />
       <link rel="stylesheet" href="_static/dark_mode_css/dark.css" type="text/css" />
@@ -90,11 +91,41 @@
 <h1>API<a class="headerlink" href="#api" title="Permalink to this heading"></a></h1>
 <section id="import-convexgating">
 <h2>Import Convexgating<a class="headerlink" href="#import-convexgating" title="Permalink to this heading"></a></h2>
-<p>Import Scanpy as:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">import scanpy as sc</span>
+<p>Import Convexgating as:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">import convexgating</span>
 </pre></div>
 </div>
 <p>Then use it</p>
+<span class="target" id="module-convexgating"></span><span class="target" id="module-convexgating.gating_strategy"></span><p>Learning gating strategy for specific cell clusters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param adata</dt>
+<dd class="field-odd"><p>complete input Data for gating.</p>
+</dd>
+<dt class="field-even">type adata</dt>
+<dd class="field-even"><p>AnnData object</p>
+</dd>
+<dt class="field-odd">param cluster_numbers</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>list of cluster numbers/identifieres in adata.obs[cluster_string] to find gating strategy for</dt><dd><p>-&gt; e.g [‘4’,’5’] to find gating strategies for cell population ‘4’ and ‘5’</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">type cluster_numbers</dt>
+<dd class="field-even"><p>list of strings or ints or doubles</p>
+</dd>
+<dt class="field-odd">param cluster_string</dt>
+<dd class="field-odd"><p>column name in adata.obs where cluster labels are found, e.g ‘louvain’</p>
+</dd>
+<dt class="field-even">type cluster_string</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+<dt class="field-odd">param add_noise</dt>
+<dd class="field-odd"><p>if True add small amount of nice to count data for more stable internal procedures</p>
+</dd>
+<dt class="field-even">type add_noise</dt>
+<dd class="field-even"><p>True or False</p>
+</dd>
+</dl>
 </section>
 </section>
 
