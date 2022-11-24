@@ -15,15 +15,7 @@ Import Convexgating as:
 
 Then use it
 
-.. automodule:: convexgating
-    :members:
-    :undoc-members:
-    :inherited-members:
-    :show-inheritance:
+gating_strategy
+---------------
 
-
-.. automodule:: convexgating.gating_strategy
-    :members:
-    :undoc-members:
-    :inherited-members:
-    :show-inheritance:
+.. autoclass:: convexgating.gating_strategy
