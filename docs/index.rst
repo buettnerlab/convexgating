@@ -1,7 +1,7 @@
 .. include:: ../README.rst
-===========================
+========================================
 Welcome to convexgating's documentation!
-==========================================================
+========================================
 
 .. toctree::
    :maxdepth: 2
@@ -10,7 +10,6 @@ Welcome to convexgating's documentation!
    readme
    installation
    usage
-   tutorials
    api
    reference
    contributing
