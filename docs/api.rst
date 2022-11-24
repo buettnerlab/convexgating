@@ -7,15 +7,22 @@ API
 Import Convexgating
 -------------------
 
-Import Scanpy as:
+Import Convexgating as:
 
 .. code-block:: console
     
-    import scanpy as sc
+    import convexgating
 
 Then use it
 
 .. automodule:: convexgating
+    :members:
+    :undoc-members:
+    :inherited-members:
+    :show-inheritance:
+
+
+.. automodule:: convexgating.gating_strategy
     :members:
     :undoc-members:
     :inherited-members:
