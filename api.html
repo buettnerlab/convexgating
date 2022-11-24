@@ -55,6 +55,10 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#import-convexgating">Import Convexgating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gating-strategy">gating_strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#convexgating.gating_strategy"><code class="docutils literal notranslate"><span class="pre">gating_strategy</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
@@ -96,36 +100,29 @@
 </pre></div>
 </div>
 <p>Then use it</p>
-<span class="target" id="module-convexgating"></span><span class="target" id="module-convexgating.gating_strategy"></span><p>Learning gating strategy for specific cell clusters.</p>
+</section>
+<section id="gating-strategy">
+<h2>gating_strategy<a class="headerlink" href="#gating-strategy" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="convexgating.gating_strategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">convexgating.</span></span><span class="sig-name descname"><span class="pre">gating_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_numbers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/work/convexgating/convexgating/docs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convexgating/tools.html#gating_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convexgating.gating_strategy" title="Permalink to this definition"></a></dt>
+<dd><p>Learning gating strategy for specific cell clusters.</p>
 <dl class="field-list simple">
-<dt class="field-odd">param adata</dt>
-<dd class="field-odd"><p>complete input Data for gating.</p>
-</dd>
-<dt class="field-even">type adata</dt>
-<dd class="field-even"><p>AnnData object</p>
-</dd>
-<dt class="field-odd">param cluster_numbers</dt>
-<dd class="field-odd"><dl class="simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> (<em>AnnData object</em>) – complete input Data for gating.</p></li>
+<li><p><strong>cluster_numbers</strong> (<em>list</em><em> of </em><em>strings</em><em> or </em><em>ints</em><em> or </em><em>doubles</em>) – <dl class="simple">
 <dt>list of cluster numbers/identifieres in adata.obs[cluster_string] to find gating strategy for</dt><dd><p>-&gt; e.g [‘4’,’5’] to find gating strategies for cell population ‘4’ and ‘5’</p>
 </dd>
 </dl>
-</dd>
-<dt class="field-even">type cluster_numbers</dt>
-<dd class="field-even"><p>list of strings or ints or doubles</p>
-</dd>
-<dt class="field-odd">param cluster_string</dt>
-<dd class="field-odd"><p>column name in adata.obs where cluster labels are found, e.g ‘louvain’</p>
-</dd>
-<dt class="field-even">type cluster_string</dt>
-<dd class="field-even"><p>string</p>
-</dd>
-<dt class="field-odd">param add_noise</dt>
-<dd class="field-odd"><p>if True add small amount of nice to count data for more stable internal procedures</p>
-</dd>
-<dt class="field-even">type add_noise</dt>
-<dd class="field-even"><p>True or False</p>
+</p></li>
+<li><p><strong>cluster_string</strong> (<em>string</em>) – column name in adata.obs where cluster labels are found, e.g ‘louvain’</p></li>
+<li><p><strong>add_noise</strong> (<em>True</em><em> or </em><em>False</em>) – if True add small amount of nice to count data for more stable internal procedures</p></li>
+</ul>
 </dd>
 </dl>
+</dd></dl>
+
 </section>
 </section>
 

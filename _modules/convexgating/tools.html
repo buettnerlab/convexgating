@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>convexgating.tools &mdash; convexgating 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom_cookietemple.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/dark_mode_css/general.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/dark_mode_css/dark.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/dark_mode_js/default_dark.js"></script>
+        <script src="../../_static/dark_mode_js/theme_switcher.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> convexgating
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">convexgating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">convexgating</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">convexgating.tools</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for convexgating.tools</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># import time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sklearn</span>
+
+<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GradientDescentMulti</span><span class="p">,</span>
+    <span class="n">apply_convex_hull</span><span class="p">,</span>
+    <span class="n">classify_points</span><span class="p">,</span>
+    <span class="n">create_target_df</span><span class="p">,</span>
+    <span class="n">fraction_targets_vanilla</span><span class="p">,</span>
+    <span class="n">generate2unit_planes</span><span class="p">,</span>
+    <span class="n">get_candidate_points</span><span class="p">,</span>
+    <span class="n">get_new_marker_combo</span><span class="p">,</span>
+    <span class="n">get_normal_v_biases</span><span class="p">,</span>
+    <span class="n">get_points_to_connect</span><span class="p">,</span>
+    <span class="n">get_relevant_points</span><span class="p">,</span>
+    <span class="n">get_two_points_each_hyperplane</span><span class="p">,</span>
+    <span class="n">initialize_norm_bias</span><span class="p">,</span>
+    <span class="n">metrics_new</span><span class="p">,</span>
+    <span class="n">normalization</span><span class="p">,</span>
+    <span class="n">only_f1</span><span class="p">,</span>
+    <span class="n">preprocess_adata_gating</span><span class="p">,</span>
+    <span class="n">process_results</span><span class="p">,</span>
+    <span class="n">return_best_marker_combo</span><span class="p">,</span>
+    <span class="n">return_best_marker_combo_single_svm</span><span class="p">,</span>
+    <span class="n">return_best_marker_combo_single_tree</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.hyperparameters</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PC</span><span class="p">,</span>
+    <span class="n">arange_init</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">,</span>
+    <span class="n">grid_divisor</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="p">,</span>
+    <span class="n">marker_sel</span><span class="p">,</span>
+    <span class="n">nr_hyperplanes</span><span class="p">,</span>
+    <span class="n">nr_max_hierarchies</span><span class="p">,</span>
+    <span class="n">refinement_grid_search</span><span class="p">,</span>
+    <span class="n">save_HEAT</span><span class="p">,</span>
+    <span class="n">save_metrics_df</span><span class="p">,</span>
+    <span class="n">save_metrics_plot</span><span class="p">,</span>
+    <span class="n">save_SCATTER</span><span class="p">,</span>
+    <span class="n">show_HEAT</span><span class="p">,</span>
+    <span class="n">show_metrics_df</span><span class="p">,</span>
+    <span class="n">show_metrics_plot</span><span class="p">,</span>
+    <span class="n">show_SCATTER</span><span class="p">,</span>
+    <span class="n">weight_version</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.plotting</span> <span class="kn">import</span> <span class="n">do_HEAT_non_targets</span><span class="p">,</span> <span class="n">do_HEAT_targets</span><span class="p">,</span> <span class="n">do_plot_metrics</span><span class="p">,</span> <span class="n">do_SCATTER</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="gating_strategy"><a class="viewcode-back" href="../../api.html#convexgating.gating_strategy">[docs]</a><span class="k">def</span> <span class="nf">gating_strategy</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">cluster_numbers</span><span class="p">,</span> <span class="n">cluster_string</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Learning gating strategy for specific cell clusters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adata : AnnData object</span>
+<span class="sd">        complete input Data for gating.</span>
+<span class="sd">    cluster_numbers : list of strings or ints or doubles</span>
+<span class="sd">        list of cluster numbers/identifieres in adata.obs[cluster_string] to find gating strategy for</span>
+<span class="sd">         -&gt; e.g [&#39;4&#39;,&#39;5&#39;] to find gating strategies for cell population &#39;4&#39; and &#39;5&#39;</span>
+<span class="sd">    cluster_string : string</span>
+<span class="sd">        column name in adata.obs where cluster labels are found, e.g &#39;louvain&#39;</span>
+<span class="sd">    add_noise : True or False</span>
+<span class="sd">        if True add small amount of nice to count data for more stable internal procedures</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">add_noise</span><span class="p">:</span>
+        <span class="n">adata</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10000</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span>
+    <span class="n">cell_data</span> <span class="o">=</span> <span class="n">preprocess_adata_gating</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">cluster_string</span><span class="p">)</span>
+    <span class="n">channels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="c1"># print(&#39;Checkpoint 0&#39;)</span>
+    <span class="n">clust_string_dict</span><span class="p">,</span> <span class="n">re_gating_dict</span><span class="p">,</span> <span class="n">general_dict</span> <span class="o">=</span> <span class="n">FIND_GATING_STRATEGY</span><span class="p">(</span>
+        <span class="n">cell_data</span><span class="p">,</span>
+        <span class="n">channels</span><span class="p">,</span>
+        <span class="n">cluster_numbers</span><span class="p">,</span>
+        <span class="n">nr_max_hierarchies</span><span class="o">=</span><span class="n">nr_max_hierarchies</span><span class="p">,</span>
+        <span class="n">PC</span><span class="o">=</span><span class="n">PC</span><span class="p">,</span>
+        <span class="n">cluster_string</span><span class="o">=</span><span class="n">cluster_string</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">nr_hyperplanes</span><span class="o">=</span><span class="n">nr_hyperplanes</span><span class="p">,</span>
+        <span class="n">grid_divisor</span><span class="o">=</span><span class="n">grid_divisor</span><span class="p">,</span>
+        <span class="n">refinement_grid_search</span><span class="o">=</span><span class="n">refinement_grid_search</span><span class="p">,</span>
+        <span class="n">weight_version</span><span class="o">=</span><span class="n">weight_version</span><span class="p">,</span>
+        <span class="n">marker_sel</span><span class="o">=</span><span class="n">marker_sel</span><span class="p">,</span>
+        <span class="n">arange_init</span><span class="o">=</span><span class="n">arange_init</span><span class="p">,</span>
+        <span class="n">show_HEAT</span><span class="o">=</span><span class="n">show_HEAT</span><span class="p">,</span>
+        <span class="n">save_HEAT</span><span class="o">=</span><span class="n">save_HEAT</span><span class="p">,</span>
+        <span class="n">show_SCATTER</span><span class="o">=</span><span class="n">show_SCATTER</span><span class="p">,</span>
+        <span class="n">save_SCATTER</span><span class="o">=</span><span class="n">save_SCATTER</span><span class="p">,</span>
+        <span class="n">show_metrics_df</span><span class="o">=</span><span class="n">show_metrics_df</span><span class="p">,</span>
+        <span class="n">save_metrics_df</span><span class="o">=</span><span class="n">save_metrics_df</span><span class="p">,</span>
+        <span class="n">save_metrics_plot</span><span class="o">=</span><span class="n">save_metrics_plot</span><span class="p">,</span>
+        <span class="n">show_metrics_plot</span><span class="o">=</span><span class="n">show_metrics_plot</span><span class="p">,</span>
+        <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># print(&#39;Checkpoint 7&#39;)</span>
+    <span class="n">meta_info</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">meta_info</span><span class="p">[</span><span class="s2">&quot;clusterkeys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clust_string_dict</span>
+    <span class="n">meta_info</span><span class="p">[</span><span class="s2">&quot;gating_summary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">re_gating_dict</span>
+    <span class="n">meta_info</span><span class="p">[</span><span class="s2">&quot;general_summary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">general_dict</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;meta_info.npy&quot;</span><span class="p">),</span> <span class="n">meta_info</span><span class="p">)</span></div>
+    <span class="c1"># np.load(&#39;meta_info.npy&#39;,allow_pickle=&#39;TRUE&#39;).item() to read again</span>
+
+
+<span class="k">def</span> <span class="nf">FIND_GATING_STRATEGY</span><span class="p">(</span>
+    <span class="n">cell_data</span><span class="p">,</span>
+    <span class="n">channels</span><span class="p">,</span>
+    <span class="n">cluster_numbers</span><span class="p">,</span>
+    <span class="n">first_hierarchy</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">nr_max_hierarchies</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">cluster_string</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span>
+    <span class="n">PC</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">visualize_gate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">nr_hyperplanes</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+    <span class="n">grid_divisor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">arange_init</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+    <span class="n">refinement_grid_search</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">weight_version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">show_everything</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">max_try</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">marker_sel</span><span class="o">=</span><span class="s2">&quot;heuristic&quot;</span><span class="p">,</span>
+    <span class="n">show_HEAT</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_HEAT</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_SCATTER</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_SCATTER</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_metrics_df</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_metrics_df</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_metrics_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_metrics_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finding a gating strategy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cell_data : pd.DataFrame</span>
+<span class="sd">        size (n_cells,n_markers) -&gt; output of preprocess_adata_gating</span>
+<span class="sd">    channels : list</span>
+<span class="sd">        list of strings to indicate which channels to use for gating</span>
+<span class="sd">    cluster_numbers : list of strings</span>
+<span class="sd">        list of clusters to find gating strategy (e.g. [&#39;2&#39;,&#39;4&#39;])</span>
+<span class="sd">    first_hierarchy : int</span>
+<span class="sd">        start hierarch. The default is 1.</span>
+<span class="sd">    nr_max_hierarchies : int</span>
+<span class="sd">        maximal hierarchies in gating strategy. The default is 5.</span>
+<span class="sd">    cluster_string : string</span>
+<span class="sd">        name of column in cell_data that contains labels. The default is &#39;louvain&#39;.</span>
+<span class="sd">    PC : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is True.</span>
+<span class="sd">    visualize_gate : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is False.</span>
+<span class="sd">    learning_rate : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 0.05.</span>
+<span class="sd">    iterations : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 50.</span>
+<span class="sd">    nr_hyperplanes : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 8.</span>
+<span class="sd">    batch_size : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 5000.</span>
+<span class="sd">    grid_divisor : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 2.</span>
+<span class="sd">    arange_init : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is [0,2,4,8,10].</span>
+<span class="sd">    refinement_grid_search : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 2.</span>
+<span class="sd">    weight_version : int, optional</span>
+<span class="sd">        0,1,2 -&gt; if 0 : negative proportional</span>
+<span class="sd">              -&gt; if 1 : negative proportional only if more non-targets than targets -&gt; otherwise equal weight</span>
+<span class="sd">              -&gt; if 2 : always equal weight. The default is 1.</span>
+<span class="sd">    marker_sel : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is &#39;heuristic&#39;.</span>
+<span class="sd">    show_everything : boolean, optional</span>
+<span class="sd">        True if gating procedure should be visualized, False if not. The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+<span class="sd">    best_hierarchy : list</span>
+<span class="sd">        list of hierarchies for an optimal gating panel.</span>
+<span class="sd">    summary_gating_dicts : dict</span>
+<span class="sd">        summary of gating results per hierarchy.</span>
+<span class="sd">    summary_losses_dicts : dict</span>
+<span class="sd">        summary of the loss function results per hierarchy.</span>
+<span class="sd">    target_df_dicts : dict of pandas DataFrames</span>
+<span class="sd">        indicating whether a cell is part of a gate or not.</span>
+<span class="sd">    renorm_df : TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+<span class="sd">    in_gate_dicts : TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># print(&#39;Checkpoint 1&#39;)</span>
+    <span class="n">overview</span><span class="p">,</span> <span class="n">results_dictionaries</span><span class="p">,</span> <span class="n">renorm_df_dict</span><span class="p">,</span> <span class="n">res_in_gates</span> <span class="o">=</span> <span class="n">do_complete_gating</span><span class="p">(</span>
+        <span class="n">cell_data</span><span class="p">,</span>
+        <span class="n">channels</span><span class="p">,</span>
+        <span class="n">cluster_numbers</span><span class="p">,</span>
+        <span class="n">nr_max_hierarchies</span><span class="o">=</span><span class="n">nr_max_hierarchies</span><span class="p">,</span>
+        <span class="n">cluster_string</span><span class="o">=</span><span class="n">cluster_string</span><span class="p">,</span>
+        <span class="n">PC</span><span class="o">=</span><span class="n">PC</span><span class="p">,</span>
+        <span class="n">visualize_gate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span>
+        <span class="n">nr_hyperplanes</span><span class="o">=</span><span class="n">nr_hyperplanes</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">grid_divisor</span><span class="o">=</span><span class="n">grid_divisor</span><span class="p">,</span>
+        <span class="n">arange_init</span><span class="o">=</span><span class="n">arange_init</span><span class="p">,</span>
+        <span class="n">refinement_grid_search</span><span class="o">=</span><span class="n">refinement_grid_search</span><span class="p">,</span>
+        <span class="n">weight_version</span><span class="o">=</span><span class="n">weight_version</span><span class="p">,</span>
+        <span class="n">show_everything</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">max_try</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">marker_sel</span><span class="o">=</span><span class="n">marker_sel</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">clust_string_dict</span><span class="p">,</span> <span class="n">re_gating_dict</span><span class="p">,</span> <span class="n">general_dict</span> <span class="o">=</span> <span class="n">process_results</span><span class="p">(</span>
+        <span class="n">cell_data</span><span class="p">,</span> <span class="n">overview</span><span class="p">,</span> <span class="n">results_dictionaries</span><span class="p">,</span> <span class="n">renorm_df_dict</span><span class="p">,</span> <span class="n">res_in_gates</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">cluster_string</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">overview</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]):</span>
+        <span class="n">generate_output</span><span class="p">(</span>
+            <span class="n">clust_string_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+            <span class="n">re_gating_dict</span><span class="p">,</span>
+            <span class="n">general_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+            <span class="n">key</span><span class="p">,</span>
+            <span class="n">overview</span><span class="p">,</span>
+            <span class="n">show_HEAT</span><span class="o">=</span><span class="n">show_HEAT</span><span class="p">,</span>
+            <span class="n">save_HEAT</span><span class="o">=</span><span class="n">save_HEAT</span><span class="p">,</span>
+            <span class="n">show_SCATTER</span><span class="o">=</span><span class="n">show_SCATTER</span><span class="p">,</span>
+            <span class="n">save_SCATTER</span><span class="o">=</span><span class="n">save_SCATTER</span><span class="p">,</span>
+            <span class="n">show_metrics_df</span><span class="o">=</span><span class="n">show_metrics_df</span><span class="p">,</span>
+            <span class="n">save_metrics_df</span><span class="o">=</span><span class="n">save_metrics_df</span><span class="p">,</span>
+            <span class="n">save_metrics_plot</span><span class="o">=</span><span class="n">save_metrics_plot</span><span class="p">,</span>
+            <span class="n">show_metrics_plot</span><span class="o">=</span><span class="n">show_metrics_plot</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">clust_string_dict</span><span class="p">,</span> <span class="n">re_gating_dict</span><span class="p">,</span> <span class="n">general_dict</span>
+
+
+<span class="k">def</span> <span class="nf">do_complete_gating</span><span class="p">(</span>
+    <span class="n">cell_data</span><span class="p">,</span>
+    <span class="n">channels</span><span class="p">,</span>
+    <span class="n">cluster_numbers</span><span class="p">,</span>
+    <span class="n">first_hierarchy</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">nr_max_hierarchies</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">cluster_string</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span>
+    <span class="n">PC</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">visualize_gate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">nr_hyperplanes</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+    <span class="n">grid_divisor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">arange_init</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+    <span class="n">refinement_grid_search</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">weight_version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">show_everything</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">max_try</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">marker_sel</span><span class="o">=</span><span class="s2">&quot;heuristic&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cell_data : pd.DataFrame</span>
+<span class="sd">        size (n_cells,n_markers) -&gt; output of preprocess_adata_gating</span>
+<span class="sd">    channels : list</span>
+<span class="sd">        list of strings to indicate which channels to use for gating</span>
+<span class="sd">    cluster_numbers : list of strings</span>
+<span class="sd">        list of clusters to find gating strategy (e.g. [&#39;2&#39;,&#39;4&#39;])</span>
+<span class="sd">    first_hierarchy : int</span>
+<span class="sd">        start hierarch. The default is 1.</span>
+<span class="sd">    nr_max_hierarchies : int</span>
+<span class="sd">        maximal hierarchies in gating strategy. The default is 5.</span>
+<span class="sd">    cluster_string : string</span>
+<span class="sd">        name of column in cell_data that contains labels. The default is &#39;louvain&#39;.</span>
+<span class="sd">    PC : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is True.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># cell_data: dataFrame with marker values per cell -&gt; output of adata_to_df_gating</span>
+    <span class="c1"># channels: list of marker names to consider e.g. [&#39;marker1&#39;,&#39;marker2&#39;]</span>
+    <span class="c1"># cluster_numbers: list of cluster_names to find gating strategy for, e.g [&#39;1&#39;,&#39;3&#39;]</span>
+    <span class="c1"># first_hierarchy: int -&gt; default 1 -&gt; start hierarchy number</span>
+    <span class="c1"># nr_max_hierarchies: int -&gt; default 5 -&gt; maximum number of hierarchies in gating strategy</span>
+    <span class="c1"># cluster_string: string, (column)name of cluster labels -&gt; default &#39;louvain&#39;</span>
+    <span class="c1"># PC: True or False: True -&gt; use PCA for finding optimal gate (default</span>
+    <span class="c1">#                   False -&gt; no PCA</span>
+    <span class="c1"># visualize_gate: True or False -&gt; gate visualization</span>
+    <span class="c1"># learning_rate: double, learning rate in SGD -&gt; default 0.05</span>
+    <span class="c1"># iterations: int, number of iterations in SGD -&gt; default 50</span>
+    <span class="c1"># nr_hyperplanes: int, number of hyperplanes to specify gate -&gt; default 8</span>
+    <span class="c1"># batch_size: int, batch_size -&gt; default 5000</span>
+    <span class="c1"># grid_divisor: int, parameter for adaptive grid search -&gt; default 4</span>
+    <span class="c1"># arange_init: initial grid for adaptive grid search -&gt; default [0,2,4,8,10]</span>
+    <span class="c1"># refinement_grid_search: parameter for adaptive grid search -&gt; default 4</span>
+    <span class="c1"># show_everything: True if gating procedure should be visualized, False if not</span>
+    <span class="c1"># weight_version: 0,1,2 -&gt; if 0 : negative proportional</span>
+    <span class="c1">#                      -&gt; if 1 : negative proportional only if more non-targets than targets -&gt; otherwise equal weight (default)</span>
+    <span class="c1">#                      -&gt; if 2 : always equal weight</span>
+    <span class="c1"># max_try: int, number of maximal try&#39;s if internal errors occured</span>
+    <span class="c1"># marker_sel: string, marker selection method either &#39;heuristic&#39; (default)</span>
+    <span class="c1">#                                                   &#39;tree&#39; (based on Decision Tree)</span>
+    <span class="c1">#                                                   &#39;svm&#39;  (based on Linear SVM)</span>
+    <span class="c1"># outputs:</span>
+    <span class="c1"># result_grid_df: data frame with result and information on hyperparameters</span>
+    <span class="c1"># results_dictionaries: dictionary -&gt; precise information on gate locations per hierarchy</span>
+
+    <span class="c1"># cluster_string = &#39;louvain&#39;</span>
+    <span class="n">result_grid_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;key&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nr_max_hierarchies&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;learning_rate&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;iterations&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nr_hyperplanes&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;grid_divisor&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;arange_init&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;refinement_grid_search&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;weight_version&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cluster_number&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;f1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;best_hierarchy&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">renorm_df_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">results_dictionaries</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">res_in_gates</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cluster_number</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cluster_numbers</span><span class="p">):</span>
+        <span class="c1"># print(key)</span>
+        <span class="n">fail</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">fail</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;</span> <span class="n">max_try</span><span class="p">):</span>
+            <span class="c1"># print(&#39;Checkpoint 2&#39;)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="p">(</span>
+                    <span class="n">f1</span><span class="p">,</span>
+                    <span class="n">best_hierarchy</span><span class="p">,</span>
+                    <span class="n">summary_gating_dicts</span><span class="p">,</span>
+                    <span class="n">summary_losses_dicts</span><span class="p">,</span>
+                    <span class="n">target_df_dicts</span><span class="p">,</span>
+                    <span class="n">renorm_df</span><span class="p">,</span>
+                    <span class="n">res_in_gate</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">=</span> <span class="n">do_adaptive_grid_search</span><span class="p">(</span>
+                    <span class="n">cell_data</span><span class="p">,</span>
+                    <span class="n">channels</span><span class="p">,</span>
+                    <span class="n">cluster_number</span><span class="p">,</span>
+                    <span class="n">nr_max_hierarchies</span><span class="o">=</span><span class="n">nr_max_hierarchies</span><span class="p">,</span>
+                    <span class="n">cluster_string</span><span class="o">=</span><span class="n">cluster_string</span><span class="p">,</span>
+                    <span class="n">visualize_gate</span><span class="o">=</span><span class="n">visualize_gate</span><span class="p">,</span>
+                    <span class="n">PC</span><span class="o">=</span><span class="n">PC</span><span class="p">,</span>
+                    <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+                    <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span>
+                    <span class="n">nr_hyperplanes</span><span class="o">=</span><span class="n">nr_hyperplanes</span><span class="p">,</span>
+                    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+                    <span class="n">grid_divisor</span><span class="o">=</span><span class="n">grid_divisor</span><span class="p">,</span>
+                    <span class="n">arange_init</span><span class="o">=</span><span class="n">arange_init</span><span class="p">,</span>
+                    <span class="n">refinement_grid_search</span><span class="o">=</span><span class="n">refinement_grid_search</span><span class="p">,</span>
+                    <span class="n">weight_version</span><span class="o">=</span><span class="n">weight_version</span><span class="p">,</span>
+                    <span class="n">marker_sel</span><span class="o">=</span><span class="n">marker_sel</span><span class="p">,</span>
+                    <span class="n">show_everything</span><span class="o">=</span><span class="n">show_everything</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="c1"># write results to dictionary</span>
+                <span class="n">res_tmp</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                    <span class="s2">&quot;nr_max_hierarchies&quot;</span><span class="p">:</span> <span class="n">nr_max_hierarchies</span><span class="p">,</span>
+                    <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span> <span class="n">learning_rate</span><span class="p">,</span>
+                    <span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="n">iterations</span><span class="p">,</span>
+                    <span class="s2">&quot;nr_hyperplanes&quot;</span><span class="p">:</span> <span class="n">nr_hyperplanes</span><span class="p">,</span>
+                    <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="n">batch_size</span><span class="p">,</span>
+                    <span class="s2">&quot;grid_divisor&quot;</span><span class="p">:</span> <span class="n">grid_divisor</span><span class="p">,</span>
+                    <span class="s2">&quot;arange_init&quot;</span><span class="p">:</span> <span class="n">arange_init</span><span class="p">,</span>
+                    <span class="s2">&quot;refinement_grid_search&quot;</span><span class="p">:</span> <span class="n">refinement_grid_search</span><span class="p">,</span>
+                    <span class="s2">&quot;weight_version&quot;</span><span class="p">:</span> <span class="n">weight_version</span><span class="p">,</span>
+                    <span class="s2">&quot;cluster_number&quot;</span><span class="p">:</span> <span class="n">cluster_number</span><span class="p">,</span>
+                    <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+                    <span class="s2">&quot;best_hierarchy&quot;</span><span class="p">:</span> <span class="n">best_hierarchy</span><span class="p">,</span>
+                <span class="p">}</span>
+
+                <span class="n">result_grid_df</span> <span class="o">=</span> <span class="n">result_grid_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_tmp</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="n">results_dictionaries</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">target_df_dicts</span><span class="p">,</span> <span class="n">summary_gating_dicts</span><span class="p">]</span>
+
+                <span class="n">renorm_df_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">renorm_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">res_in_gates</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_in_gate</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="c1"># key += 1</span>
+                <span class="c1"># quit while-loop</span>
+                <span class="n">fail</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="c1"># print(f1)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="n">max_try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;failed&quot;</span><span class="p">)</span>
+        <span class="c1"># print(&#39;Checkpoint 3&#39;)</span>
+
+    <span class="k">return</span> <span class="n">result_grid_df</span><span class="p">,</span> <span class="n">results_dictionaries</span><span class="p">,</span> <span class="n">renorm_df_dict</span><span class="p">,</span> <span class="n">res_in_gates</span>
+
+
+<span class="k">def</span> <span class="nf">do_adaptive_grid_search</span><span class="p">(</span>  <span class="c1"># noqa: max-complexity: 19</span>
+    <span class="n">cell_data</span><span class="p">,</span>
+    <span class="n">channels</span><span class="p">,</span>
+    <span class="n">cluster_number</span><span class="p">,</span>
+    <span class="n">first_hierarchy</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">nr_max_hierarchies</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">cluster_string</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span>
+    <span class="n">PC</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">visualize_gate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">nr_hyperplanes</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+    <span class="n">grid_divisor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">arange_init</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+    <span class="n">refinement_grid_search</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">weight_version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">marker_sel</span><span class="o">=</span><span class="s2">&quot;heuristic&quot;</span><span class="p">,</span>
+    <span class="n">show_everything</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recipe function for adaptive grid search to find an optimal gate</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cell_data : pd.DataFrame</span>
+<span class="sd">        with columns markers and cluster_string, rows -&gt; cell values.</span>
+<span class="sd">    channels : list</span>
+<span class="sd">        a list of strings to indicate which channels to use for gating.</span>
+<span class="sd">    cluster_number : str</span>
+<span class="sd">        categories of cluster_string.</span>
+<span class="sd">    first_hierarchy : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 1.</span>
+<span class="sd">    nr_max_hierarchies : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 5.</span>
+<span class="sd">    cluster_string : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is &#39;louvain&#39;.</span>
+<span class="sd">    PC : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is True.</span>
+<span class="sd">    visualize_gate : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is False.</span>
+<span class="sd">    learning_rate : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 0.05.</span>
+<span class="sd">    iterations : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 50.</span>
+<span class="sd">    nr_hyperplanes : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 8.</span>
+<span class="sd">    batch_size : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 5000.</span>
+<span class="sd">    grid_divisor : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 2.</span>
+<span class="sd">    arange_init : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is [0,2,4,8,10].</span>
+<span class="sd">    refinement_grid_search : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 2.</span>
+<span class="sd">    weight_version : int, optional</span>
+<span class="sd">        0,1,2 -&gt; if 0 : negative proportional</span>
+<span class="sd">              -&gt; if 1 : negative proportional only if more non-targets than targets -&gt; otherwise equal weight</span>
+<span class="sd">              -&gt; if 2 : always equal weight. The default is 1.</span>
+<span class="sd">    marker_sel : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is &#39;heuristic&#39;.</span>
+<span class="sd">    show_everything : boolean, optional</span>
+<span class="sd">        True if gating procedure should be visualized, False if not. The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+<span class="sd">    best_hierarchy : list</span>
+<span class="sd">        list of hierarchies for an optimal gating panel.</span>
+<span class="sd">    summary_gating_dicts : dict</span>
+<span class="sd">        summary of gating results per hierarchy.</span>
+<span class="sd">    summary_losses_dicts : dict</span>
+<span class="sd">        summary of the loss function results per hierarchy.</span>
+<span class="sd">    target_df_dicts : dict of pandas DataFrames</span>
+<span class="sd">        indicating whether a cell is part of a gate or not.</span>
+<span class="sd">    renorm_df : TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+<span class="sd">    in_gate_dicts : TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">filtered_obs</span> <span class="o">=</span> <span class="n">cell_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">renorm_df</span> <span class="o">=</span> <span class="n">normalization</span><span class="p">(</span><span class="n">filtered_obs</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+    <span class="n">filtered_obs</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">filtered_obs</span><span class="p">[</span><span class="n">cluster_string</span><span class="p">]</span> <span class="o">==</span> <span class="n">cluster_number</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span>
+    <span class="n">nr_total_targets_beginning</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">filtered_obs</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span>
+    <span class="n">combos_so_far</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">summary_gating_dicts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">in_gate_dicts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">summary_losses_dicts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">target_df_dicts</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># initialise</span>
+    <span class="n">gating_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">losses_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">in_gate</span> <span class="o">=</span> <span class="p">(</span><span class="n">filtered_obs</span><span class="p">[</span><span class="n">cluster_string</span><span class="p">]</span> <span class="o">==</span> <span class="n">cluster_number</span><span class="p">)</span> <span class="o">*</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">hierarchy_nr</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">first_hierarchy</span><span class="p">,</span> <span class="n">nr_max_hierarchies</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="c1"># print(&#39;Search markers&#39;)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">marker_sel</span> <span class="o">==</span> <span class="s2">&quot;heuristic&quot;</span><span class="p">:</span>
+                <span class="c1"># start_time = time.time()</span>
+                <span class="n">best_marker_combos</span> <span class="o">=</span> <span class="n">return_best_marker_combo</span><span class="p">(</span><span class="n">filtered_obs</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+                <span class="c1"># end_time = time.time()</span>
+                <span class="c1"># print(&#39;heuristic method : &#39; + str(np.round(end_time-start_time,4)) + &#39; sec&#39;)</span>
+            <span class="k">if</span> <span class="n">marker_sel</span> <span class="o">==</span> <span class="s2">&quot;tree&quot;</span><span class="p">:</span>
+                <span class="c1"># start_time = time.time()</span>
+                <span class="n">best_marker_combos</span> <span class="o">=</span> <span class="n">return_best_marker_combo_single_tree</span><span class="p">(</span><span class="n">filtered_obs</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+                <span class="c1"># end_time = time.time()</span>
+                <span class="c1"># print(&#39;tree method : &#39; + str(np.round(end_time-start_time,4)) + &#39; sec&#39;)</span>
+            <span class="k">if</span> <span class="n">marker_sel</span> <span class="o">==</span> <span class="s2">&quot;svm&quot;</span><span class="p">:</span>
+                <span class="c1"># start_time = time.time()</span>
+                <span class="n">best_marker_combos</span> <span class="o">=</span> <span class="n">return_best_marker_combo_single_svm</span><span class="p">(</span><span class="n">filtered_obs</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+                <span class="c1"># end_time = time.time()</span>
+                <span class="c1"># print(&#39;svm method : &#39; + str(np.round(end_time-start_time,4)) + &#39; sec&#39;)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">hierarchy_nr</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">break</span>
+        <span class="n">new_markers</span> <span class="o">=</span> <span class="n">get_new_marker_combo</span><span class="p">(</span><span class="n">best_marker_combos</span><span class="p">,</span> <span class="n">combos_so_far</span><span class="p">)</span>
+        <span class="c1"># print(&#39;Found new markers&#39;)</span>
+        <span class="n">marker1</span><span class="p">,</span> <span class="n">marker2</span> <span class="o">=</span> <span class="n">new_markers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_markers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">combos_so_far</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_markers</span><span class="p">)</span>
+        <span class="n">filtered_obs_temporary</span> <span class="o">=</span> <span class="n">filtered_obs</span><span class="p">[[</span><span class="n">marker1</span><span class="p">,</span> <span class="n">marker2</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_ID&quot;</span><span class="p">]]</span>
+        <span class="n">filtered_obs_temporary</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">cluster_string</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">fraction_targets_vanilla</span><span class="p">(</span><span class="n">filtered_obs_temporary</span><span class="p">,</span> <span class="n">cluster_string</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">weight_version</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">weight</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">weight_version</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">current_best_f1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">arange</span> <span class="o">=</span> <span class="n">arange_init</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">refinement_grid_search</span><span class="p">):</span>
+                <span class="c1"># print(&#39;------------------------------------&#39;)</span>
+                <span class="c1"># print(&#39;Start new hierarchy&#39;)</span>
+                <span class="c1"># print(&#39;------------------------------------&#39;)</span>
+                <span class="n">recall_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">f1_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">precision_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="c1"># add_on = 0</span>
+                <span class="k">for</span> <span class="n">scale</span> <span class="ow">in</span> <span class="n">arange</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">in_gate_cand</span><span class="p">,</span> <span class="n">losses_dict_cand</span><span class="p">,</span> <span class="n">gating_dict_cand</span> <span class="o">=</span> <span class="n">find_2D_gate</span><span class="p">(</span>
+                            <span class="n">adata</span><span class="o">=</span><span class="n">filtered_obs_temporary</span><span class="p">,</span>
+                            <span class="n">marker1</span><span class="o">=</span><span class="n">marker1</span><span class="p">,</span>
+                            <span class="n">marker2</span><span class="o">=</span><span class="n">marker2</span><span class="p">,</span>
+                            <span class="n">cluster_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">cluster_method</span><span class="o">=</span><span class="n">cluster_string</span><span class="p">,</span>
+                            <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span>
+                            <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+                            <span class="n">nr_hyperplanes</span><span class="o">=</span><span class="n">nr_hyperplanes</span><span class="p">,</span>
+                            <span class="n">weight_factor_target</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span>
+                            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+                            <span class="n">visualize</span><span class="o">=</span><span class="n">show_everything</span><span class="p">,</span>
+                            <span class="n">penalty_parameter2</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+                            <span class="n">penalty_parameter</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+                            <span class="n">PC</span><span class="o">=</span><span class="n">PC</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="c1"># total_targets = sum(filtered_obs_temporary[&#39;louvain&#39;] == 1)</span>
+                        <span class="n">recall</span> <span class="o">=</span> <span class="n">gating_dict_cand</span><span class="p">[</span><span class="s2">&quot;tn_fp_fn_tp&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">nr_total_targets_beginning</span>
+                        <span class="n">precision</span> <span class="o">=</span> <span class="n">gating_dict_cand</span><span class="p">[</span><span class="s2">&quot;tn_fp_fn_tp&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span>
+                            <span class="n">gating_dict_cand</span><span class="p">[</span><span class="s2">&quot;tn_fp_fn_tp&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">gating_dict_cand</span><span class="p">[</span><span class="s2">&quot;tn_fp_fn_tp&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="p">)</span>
+                        <span class="n">f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">recall</span> <span class="o">*</span> <span class="n">precision</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">recall</span> <span class="o">+</span> <span class="n">precision</span><span class="p">)</span>
+                        <span class="n">recall_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recall</span><span class="p">)</span>
+                        <span class="n">precision_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">precision</span><span class="p">)</span>
+                        <span class="n">f1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">f1</span> <span class="o">&gt;</span> <span class="n">current_best_f1</span><span class="p">:</span>
+                            <span class="n">in_gate</span> <span class="o">=</span> <span class="n">in_gate_cand</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">losses_dict</span> <span class="o">=</span> <span class="n">losses_dict_cand</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">gating_dict</span> <span class="o">=</span> <span class="n">gating_dict_cand</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="n">current_best_f1</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                <span class="n">cleaned_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f1_list</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f1_list</span><span class="p">)))])</span>
+                <span class="n">max_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">cleaned_list</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">second_max_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">cleaned_list</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">index2</span> <span class="o">=</span> <span class="n">f1_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">second_max_val</span><span class="p">)</span>
+                <span class="n">index1</span> <span class="o">=</span> <span class="n">f1_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">max_val</span><span class="p">)</span>
+                <span class="n">bound1</span> <span class="o">=</span> <span class="n">arange</span><span class="p">[</span><span class="n">index1</span><span class="p">]</span>
+                <span class="n">bound2</span> <span class="o">=</span> <span class="n">arange</span><span class="p">[</span><span class="n">index2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">bound1</span> <span class="o">&gt;</span> <span class="n">bound2</span><span class="p">:</span>
+                    <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+                        <span class="n">bound2</span> <span class="o">-</span> <span class="p">(</span><span class="n">bound1</span> <span class="o">-</span> <span class="n">bound2</span><span class="p">)</span> <span class="o">/</span> <span class="n">grid_divisor</span><span class="p">,</span>
+                        <span class="n">bound1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">bound1</span> <span class="o">-</span> <span class="n">bound2</span><span class="p">)</span> <span class="o">/</span> <span class="n">grid_divisor</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">bound1</span> <span class="o">-</span> <span class="n">bound2</span><span class="p">)</span> <span class="o">/</span> <span class="n">grid_divisor</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+                        <span class="n">bound1</span> <span class="o">-</span> <span class="p">(</span><span class="n">bound1</span> <span class="o">-</span> <span class="n">bound2</span><span class="p">)</span> <span class="o">/</span> <span class="n">grid_divisor</span><span class="p">,</span>
+                        <span class="n">bound2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">bound2</span> <span class="o">-</span> <span class="n">bound1</span><span class="p">)</span> <span class="o">/</span> <span class="n">grid_divisor</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">bound2</span> <span class="o">-</span> <span class="n">bound1</span><span class="p">)</span> <span class="o">/</span> <span class="n">grid_divisor</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="c1"># best_penalty_strength = bound1</span>
+                <span class="c1"># print(best_penalty_strength)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">summary_gating_dicts</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">hierarchy_nr</span><span class="p">)]</span> <span class="o">=</span> <span class="n">gating_dict</span>
+        <span class="n">summary_losses_dicts</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">hierarchy_nr</span><span class="p">)]</span> <span class="o">=</span> <span class="n">losses_dict</span>
+        <span class="n">in_gate_dicts</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">hierarchy_nr</span><span class="p">)]</span> <span class="o">=</span> <span class="n">in_gate</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">target_df_dicts</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">hierarchy_nr</span><span class="p">)]</span> <span class="o">=</span> <span class="n">create_target_df</span><span class="p">(</span>
+            <span class="n">filtered_obs</span><span class="p">,</span> <span class="n">marker1</span><span class="p">,</span> <span class="n">marker2</span><span class="p">,</span> <span class="n">cluster_string</span><span class="p">,</span> <span class="n">cluster_number</span>
+        <span class="p">)</span>
+        <span class="n">filtered_obs</span><span class="p">[</span><span class="s2">&quot;gate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">in_gate</span> <span class="o">*</span> <span class="mi">1</span>
+        <span class="n">filtered_obs</span> <span class="o">=</span> <span class="n">filtered_obs</span><span class="p">[</span><span class="n">filtered_obs</span><span class="p">[</span><span class="s2">&quot;gate&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># print(&#39;hierarchy &#39; +str(hierarchy_nr) +&#39; finished&#39;)</span>
+    <span class="n">f1_total_list</span> <span class="o">=</span> <span class="n">only_f1</span><span class="p">(</span><span class="n">target_df_dicts</span><span class="p">,</span> <span class="n">summary_gating_dicts</span><span class="p">,</span> <span class="n">hierarchy_nr</span><span class="p">)</span>
+    <span class="c1"># best_f1_per_cluster.append(np.max(np.array(f1_total_list)))</span>
+    <span class="n">best_hierarchy</span> <span class="o">=</span> <span class="n">f1_total_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">f1_total_list</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">max</span><span class="p">(</span><span class="n">f1_total_list</span><span class="p">),</span>
+        <span class="n">best_hierarchy</span><span class="p">,</span>
+        <span class="n">summary_gating_dicts</span><span class="p">,</span>
+        <span class="n">summary_losses_dicts</span><span class="p">,</span>
+        <span class="n">target_df_dicts</span><span class="p">,</span>
+        <span class="n">renorm_df</span><span class="p">,</span>
+        <span class="n">in_gate_dicts</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">find_2D_gate</span><span class="p">(</span>
+    <span class="n">adata</span><span class="p">,</span>
+    <span class="n">marker1</span><span class="p">,</span>
+    <span class="n">marker2</span><span class="p">,</span>
+    <span class="n">cluster_number</span><span class="p">,</span>
+    <span class="n">cluster_method</span><span class="o">=</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">nr_hyperplanes</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">weight_factor_target</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">visualize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">penalty_parameter</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+    <span class="n">penalty_parameter2</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">s_sigmoid</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+    <span class="n">PC</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function to get optimal location of gate for a given marker combination</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adata : pd.DataFrame</span>
+<span class="sd">        marker values and cluster assignment as columns</span>
+<span class="sd">    marker1 : string</span>
+<span class="sd">        name of marker1 (column of adata)</span>
+<span class="sd">    marker2 : string</span>
+<span class="sd">        name of marker2 (column of adata)</span>
+<span class="sd">    cluster_number : string/int/double</span>
+<span class="sd">        identifier of target cluster</span>
+<span class="sd">    cluster_method : string</span>
+<span class="sd">       name of column with cluster assignments e.g &#39;louvain&#39;</span>
+<span class="sd">    nr_hyperplanes : int</span>
+<span class="sd">        number of hyperplanes to use for gate</span>
+<span class="sd">    weight_factor_target : double or int</span>
+<span class="sd">       targets contribute to loss with factor 2^(weight_factor_target) compared to non-targets</span>
+<span class="sd">   iterations : int</span>
+<span class="sd">        number of iterations in GradientDescentMulti</span>
+<span class="sd">    penalty_parameter : double</span>
+<span class="sd">        hyperparameter for regularization loss (penalty for plane away from targets)</span>
+<span class="sd">    penalty_parameter2 : double</span>
+<span class="sd">        hyperparamter for penalty term for collinearity of hyperplanes</span>
+<span class="sd">    s_sigmoid : int or double</span>
+<span class="sd">        scaling factor in sigmoid function</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    in_gate : np.array - shape (nr_of_cells,)</span>
+<span class="sd">        one-hot vector indicating which cells fall in gate</span>
+<span class="sd">    final_dict : dict</span>
+<span class="sd">        summary of GradientDescentMulti</span>
+<span class="sd">    gating_dict : dict</span>
+<span class="sd">        summary of gates and further information</span>
+
+
+
+
+<span class="sd">    :param iterations: int number of iterations in GradientDescentMulti</span>
+<span class="sd">    :param visualize: boolean, True =&gt; plot of gate and cells, False =&gt; no plot of gate and cells</span>
+<span class="sd">    :param penalty_parameter: double, hyperparameter for regularization loss (penalty for plane away from targets)</span>
+<span class="sd">    :param penalty_parameter2: double, hyperparamter for penalty term for collinearity of hyperplanes</span>
+<span class="sd">    :param s_sigmoid: int or double, scaling factor in sigmoid function</span>
+<span class="sd">    :return:</span>
+<span class="sd">        :in_gate: np.array of shape (nr_of_cells,) - shows which cells fall into gate</span>
+<span class="sd">        :final_dict: summary dictionary of GradientDescentMulti</span>
+<span class="sd">        :gating_dict: summary of gates and further information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># prepare gradient descent</span>
+    <span class="n">target_df</span> <span class="o">=</span> <span class="n">create_target_df</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">marker1</span><span class="p">,</span> <span class="n">marker2</span><span class="p">,</span> <span class="n">cluster_method</span><span class="p">,</span> <span class="n">cluster_number</span><span class="p">)</span>
+    <span class="n">markers</span> <span class="o">=</span> <span class="n">target_df</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">target_df</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">weighting</span> <span class="o">=</span> <span class="p">(</span><span class="n">label</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">weight_factor_target</span>
+    <span class="n">marker_for_pca</span> <span class="o">=</span> <span class="n">target_df</span><span class="p">[</span><span class="n">target_df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">normal_vectors</span><span class="p">,</span> <span class="n">biases</span> <span class="o">=</span> <span class="n">initialize_norm_bias</span><span class="p">(</span><span class="n">nr_hyperplanes</span><span class="p">,</span> <span class="n">marker_for_pca</span><span class="p">,</span> <span class="n">PC</span><span class="o">=</span><span class="n">PC</span><span class="p">)</span>
+    <span class="c1"># filtered_target = target_df[target_df[&quot;label&quot;] == 1]</span>
+
+    <span class="c1"># do gradient descent</span>
+    <span class="n">final_dict</span> <span class="o">=</span> <span class="n">GradientDescentMulti</span><span class="p">(</span>
+        <span class="n">target_df</span><span class="p">,</span>
+        <span class="n">normal_vectors</span><span class="p">,</span>
+        <span class="n">biases</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="p">,</span>
+        <span class="n">markers</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">,</span>
+        <span class="n">weighting</span><span class="p">,</span>
+        <span class="n">s</span><span class="o">=</span><span class="n">s_sigmoid</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">penalty_parameter</span><span class="o">=</span><span class="n">penalty_parameter</span><span class="p">,</span>
+        <span class="n">penalty_parameter2</span><span class="o">=</span><span class="n">penalty_parameter2</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># proecessing of results</span>
+    <span class="n">norm_vec_list</span><span class="p">,</span> <span class="n">biases_list</span> <span class="o">=</span> <span class="n">get_normal_v_biases</span><span class="p">(</span><span class="n">final_dict</span><span class="p">,</span> <span class="n">nr_hyperplanes</span><span class="p">)</span>
+    <span class="n">norm_unit_square</span><span class="p">,</span> <span class="n">bias_unit_square</span> <span class="o">=</span> <span class="n">generate2unit_planes</span><span class="p">()</span>
+    <span class="n">norm_vec_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">norm_unit_square</span><span class="p">)</span>
+    <span class="n">biases_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bias_unit_square</span><span class="p">)</span>
+
+    <span class="c1"># calculate corners of polygon based on normal vectors</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">get_two_points_each_hyperplane</span><span class="p">(</span><span class="n">norm_vec_list</span><span class="p">,</span> <span class="n">biases_list</span><span class="p">)</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">get_candidate_points</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="n">fin_points</span> <span class="o">=</span> <span class="n">get_relevant_points</span><span class="p">(</span><span class="n">norm_vec_list</span><span class="p">,</span> <span class="n">biases_list</span><span class="p">,</span> <span class="n">candidates</span><span class="p">)</span>
+    <span class="n">points_connect</span> <span class="o">=</span> <span class="n">get_points_to_connect</span><span class="p">(</span><span class="n">norm_vec_list</span><span class="p">,</span> <span class="n">biases_list</span><span class="p">,</span> <span class="n">fin_points</span><span class="p">)</span>
+
+    <span class="c1"># classify points (hard margin)</span>
+    <span class="n">in_gate</span> <span class="o">=</span> <span class="n">classify_points</span><span class="p">(</span><span class="n">norm_vec_list</span><span class="p">,</span> <span class="n">biases_list</span><span class="p">,</span> <span class="n">markers</span><span class="p">)</span>
+
+    <span class="c1"># create summary gating dictionary</span>
+    <span class="n">gating_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">gating_dict</span><span class="p">[</span><span class="s2">&quot;marker_combo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">marker1</span><span class="p">,</span> <span class="n">marker2</span><span class="p">]</span>
+    <span class="n">gating_dict</span><span class="p">[</span><span class="s2">&quot;gate_points&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fin_points</span>
+    <span class="n">gating_dict</span><span class="p">[</span><span class="s2">&quot;gate_edges&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">points_connect</span>
+    <span class="n">gating_dict</span><span class="p">[</span><span class="s2">&quot;normal_vectors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_vec_list</span>
+    <span class="n">gating_dict</span><span class="p">[</span><span class="s2">&quot;biases&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">biases_list</span>
+    <span class="c1"># append true negatives, false positives, false negatives and true positives to gating dictionary</span>
+    <span class="n">gating_dict</span><span class="p">[</span><span class="s2">&quot;tn_fp_fn_tp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">sklearn</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">target_df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">],</span> <span class="n">in_gate</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">in_gate</span><span class="p">,</span> <span class="n">final_dict</span><span class="p">,</span> <span class="n">gating_dict</span>
+
+
+<span class="k">def</span> <span class="nf">generate_output</span><span class="p">(</span>
+    <span class="n">clust_string</span><span class="p">,</span>
+    <span class="n">re_gating_dict</span><span class="p">,</span>
+    <span class="n">general</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">,</span>
+    <span class="n">overview</span><span class="p">,</span>
+    <span class="n">show_HEAT</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_HEAT</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_SCATTER</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_SCATTER</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_metrics_df</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_metrics_df</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_metrics_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_metrics_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
+<span class="p">):</span>
+    <span class="n">n_h</span><span class="p">,</span> <span class="n">hull_dict</span><span class="p">,</span> <span class="n">path_dict</span><span class="p">,</span> <span class="n">current_gate_dicts</span><span class="p">,</span> <span class="n">gate_points_dict</span> <span class="o">=</span> <span class="n">apply_convex_hull</span><span class="p">(</span><span class="n">general</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">re_gating_dict</span><span class="p">)</span>
+    <span class="n">general_targ</span> <span class="o">=</span> <span class="n">general</span><span class="p">[</span><span class="n">general</span><span class="p">[</span><span class="s2">&quot;true_label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">general_non_targ</span> <span class="o">=</span> <span class="n">general</span><span class="p">[</span><span class="n">general</span><span class="p">[</span><span class="s2">&quot;true_label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">metrics_new</span><span class="p">(</span>
+        <span class="n">clust_string</span><span class="p">,</span>
+        <span class="n">general</span><span class="p">,</span>
+        <span class="n">n_h</span><span class="p">,</span>
+        <span class="n">show_metrics_df</span><span class="o">=</span><span class="n">show_metrics_df</span><span class="p">,</span>
+        <span class="n">save_metrics_df</span><span class="o">=</span><span class="n">save_metrics_df</span><span class="p">,</span>
+        <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">best_hierarchy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">do_plot_metrics</span><span class="p">(</span>
+        <span class="n">clust_string</span><span class="p">,</span>
+        <span class="n">scores</span><span class="p">,</span>
+        <span class="n">key</span><span class="p">,</span>
+        <span class="n">overview</span><span class="p">,</span>
+        <span class="n">save_metrics_plot</span><span class="o">=</span><span class="n">save_metrics_plot</span><span class="p">,</span>
+        <span class="n">show_metrics_plot</span><span class="o">=</span><span class="n">show_metrics_plot</span><span class="p">,</span>
+        <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">hierarch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">best_hierarchy</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span> <span class="o">=</span> <span class="n">do_SCATTER</span><span class="p">(</span>
+            <span class="n">clust_string</span><span class="p">,</span>
+            <span class="n">general</span><span class="p">,</span>
+            <span class="n">general_targ</span><span class="p">,</span>
+            <span class="n">general_non_targ</span><span class="p">,</span>
+            <span class="n">hierarch</span><span class="p">,</span>
+            <span class="n">re_gating_dict</span><span class="p">,</span>
+            <span class="n">hull_dict</span><span class="p">,</span>
+            <span class="n">gate_points_dict</span><span class="p">,</span>
+            <span class="n">key</span><span class="p">,</span>
+            <span class="n">show_SCATTER</span><span class="o">=</span><span class="n">show_SCATTER</span><span class="p">,</span>
+            <span class="n">save_SCATTER</span><span class="o">=</span><span class="n">save_SCATTER</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">do_HEAT_targets</span><span class="p">(</span>
+            <span class="n">clust_string</span><span class="p">,</span>
+            <span class="n">general</span><span class="p">,</span>
+            <span class="n">general_targ</span><span class="p">,</span>
+            <span class="n">hierarch</span><span class="p">,</span>
+            <span class="n">re_gating_dict</span><span class="p">,</span>
+            <span class="n">hull_dict</span><span class="p">,</span>
+            <span class="n">gate_points_dict</span><span class="p">,</span>
+            <span class="n">xlim</span><span class="p">,</span>
+            <span class="n">ylim</span><span class="p">,</span>
+            <span class="n">key</span><span class="p">,</span>
+            <span class="n">show_HEAT</span><span class="o">=</span><span class="n">show_HEAT</span><span class="p">,</span>
+            <span class="n">save_HEAT</span><span class="o">=</span><span class="n">save_HEAT</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">do_HEAT_non_targets</span><span class="p">(</span>
+            <span class="n">clust_string</span><span class="p">,</span>
+            <span class="n">general</span><span class="p">,</span>
+            <span class="n">general_non_targ</span><span class="p">,</span>
+            <span class="n">hierarch</span><span class="p">,</span>
+            <span class="n">re_gating_dict</span><span class="p">,</span>
+            <span class="n">hull_dict</span><span class="p">,</span>
+            <span class="n">gate_points_dict</span><span class="p">,</span>
+            <span class="n">xlim</span><span class="p">,</span>
+            <span class="n">ylim</span><span class="p">,</span>
+            <span class="n">key</span><span class="p">,</span>
+            <span class="n">show_HEAT</span><span class="o">=</span><span class="n">show_HEAT</span><span class="p">,</span>
+            <span class="n">save_HEAT</span><span class="o">=</span><span class="n">save_HEAT</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Vincent Friedrich.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
