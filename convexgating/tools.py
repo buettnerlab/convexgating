@@ -30,6 +30,12 @@ from .helper import (
     return_best_marker_combo,
     return_best_marker_combo_single_svm,
     return_best_marker_combo_single_tree,
+    add_tight_hull_hierarchy,
+    add_gate_tight,
+    add_tight_metric,
+    add_visualization_hierarchy,
+    add_tight_analysis,
+    plot_metric_tight,
 )
 from .hyperparameters import (
     PC,
@@ -843,3 +849,13 @@ def generate_output(
             save_HEAT=save_HEAT,
             save_path=save_path,
         )
+
+def convex_hull_add_on(meta_info_path,target_location):
+    #meta_info_path: path to folder where meta info is saved
+    #target_location: path to folder where results with convex hull should be saved
+    meta_info = np.load(meta_info_path,allow_pickle=True).item()
+    cluster_IDs = list(meta_info['clusterkeys'].keys())
+    cluster_names = list((meta_info['clusterkeys'].values()))
+    for cluster_ID in cluster_IDs:
+        add_tight_analysis(meta_info,cluster_ID,os.path.join(target_location, 'cluster_' + cluster_names[cluster_ID]))
+        plot_metric_tight(meta_info,cluster_ID,os.path.join(target_location, 'cluster_' + cluster_names[cluster_ID]),save=True,show=True)

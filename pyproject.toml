@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "convexgating"
-version = "0.1.0"  # <<COOKIETEMPLE_FORCE_BUMP>>
+version = "0.1.1"  # <<COOKIETEMPLE_FORCE_BUMP>>
 description = "ConvexGating is a Python tool to infer optimal gating strategies for flow cytometry and cyTOF data."
 authors = ["Vincent Friedrich <vf2101@online.de>"]
 license = "MIT"
