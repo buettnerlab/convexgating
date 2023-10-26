@@ -1322,3 +1322,44 @@ def plot_metric_tight(meta_info,run_ID,save_loc,save=True,show=True):
     if show:
         plt.show()
     plt.close()
+
+def get_f1_hierarch(perf_loc):
+    tab = pd.read_csv(perf_loc)
+    #tab = pd.read_csv('level_' +str(level) + '/cluster_' + celltype + '/performance.csv')
+    best_loc_f1 = np.argmax(tab.iloc[0][1:])
+    f1 = tab.iloc[0][1:][best_loc_f1]
+    recall = tab.iloc[1][1:][best_loc_f1]
+    precision = tab.iloc[2][1:][best_loc_f1]
+    hierarchy = best_loc_f1 + 1
+    return f1,recall,precision,hierarchy
+
+def make_performance_summary(meta_info_path,target_location):
+    meta_info = np.load(meta_info_path,allow_pickle=True).item()
+    run_IDs = len(meta_info['clusterkeys'])
+    df = pd.DataFrame(columns =['cluster','f1','recall','precision','hierarchy'])
+    for run_ID in range(run_IDs):
+        ident = meta_info['clusterkeys'][run_ID]
+        cluster_name = 'cluster_' + ident
+        perf_loc = os.path.join(target_location,cluster_name,'performance.csv')
+        df = df.append(pd.DataFrame([[ident] + list(get_f1_hierarch(perf_loc))],columns=['cluster','f1','recall','precision','hierarchy']))
+    df.to_csv(os.path.join(target_location,'performance_summary.csv'),index=False)
+
+def make_marker_summary(meta_info_path,target_location):
+    meta_info = np.load(meta_info_path,allow_pickle=True).item()
+    run_IDs = len(meta_info['clusterkeys'])
+    df = pd.DataFrame(columns =['marker','hierarchy','cluster'])
+    for run_ID in range(run_IDs):
+        ident = meta_info['clusterkeys'][run_ID]
+        cluster_name = 'cluster_' + ident
+        perf_loc = os.path.join(target_location,cluster_name,'performance.csv')
+        (_,_,_,max_hierarchy) = get_f1_hierarch(perf_loc)
+        for hierarchy in range(1,max_hierarchy+1):
+            df = df.append(return_marker_combo_df(meta_info,run_ID,str(hierarchy)))
+    df.to_csv(os.path.join(target_location,'marker_summary.csv'),index=False)
+
+def return_marker_combo_df(meta_info,run_ID,hierarchy):
+    marker = meta_info['gating_summary'][run_ID][1][hierarchy]['marker_combo']
+    marker_df = pd.DataFrame(marker,columns = ['marker'])
+    marker_df['hierarchy'] = hierarchy
+    marker_df['cluster'] = meta_info['clusterkeys'][run_ID]
+    return marker_df

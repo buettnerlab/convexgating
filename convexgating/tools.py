@@ -36,6 +36,9 @@ from .helper import (
     add_visualization_hierarchy,
     add_tight_analysis,
     plot_metric_tight,
+    get_f1_hierarch,
+    make_performance_summary,
+    make_marker_summary,
 )
 from .hyperparameters import (
     PC,
@@ -850,7 +853,7 @@ def generate_output(
             save_path=save_path,
         )
 
-def convex_hull_add_on(meta_info_path,target_location):
+def convex_hull_add_on(meta_info_path,target_location,add_summary = True):
     #meta_info_path: path to folder where meta info is saved
     #target_location: path to folder where results with convex hull should be saved
     meta_info = np.load(meta_info_path,allow_pickle=True).item()
@@ -859,3 +862,6 @@ def convex_hull_add_on(meta_info_path,target_location):
     for cluster_ID in cluster_IDs:
         add_tight_analysis(meta_info,cluster_ID,os.path.join(target_location, 'cluster_' + cluster_names[cluster_ID]))
         plot_metric_tight(meta_info,cluster_ID,os.path.join(target_location, 'cluster_' + cluster_names[cluster_ID]),save=True,show=True)
+    if add_summary:
+        make_performance_summary(meta_info_path = meta_info_path,target_location=target_location)
+        make_marker_summary(meta_info_path,target_location=target_location)
