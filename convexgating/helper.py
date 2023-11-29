@@ -1363,3 +1363,13 @@ def return_marker_combo_df(meta_info,run_ID,hierarchy):
     marker_df['hierarchy'] = hierarchy
     marker_df['cluster'] = meta_info['clusterkeys'][run_ID]
     return marker_df
+
+def add_gating_to_anndata(adata,meta_info):
+    df_meta_dicts = {}
+    for key in range(len(meta_info)):
+        df_meta = meta_info['general_summary'][key]
+        filtered_columns = [col for col in df_meta.columns if col.startswith('final_gate_')]
+        df_meta_filtered = df_meta[filtered_columns]
+        df_meta_dicts[meta_info['clusterkeys'][key]] = df_meta_filtered
+    adata.uns['gating'] = df_meta_dicts
+    return adata

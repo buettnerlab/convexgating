@@ -39,6 +39,7 @@ from .helper import (
     get_f1_hierarch,
     make_performance_summary,
     make_marker_summary,
+    add_gating_to_anndata
 )
 from .hyperparameters import (
     PC,
@@ -65,6 +66,16 @@ from .plotting import do_HEAT_non_targets, do_HEAT_targets, do_plot_metrics, do_
 
 warnings.filterwarnings("ignore")
 
+def CONVEX_GATING(adata,cluster_numbers,cluster_string,save_path=os.getcwd(), add_noise=True, update_anndata=True):
+    gating_strategy(adata = adata,
+                         cluster_numbers = cluster_numbers,
+                         cluster_string = cluster_string,
+                         save_path=save_path,
+                             add_noise = add_noise)
+    convex_hull_add_on(meta_info_path = os.path.join(save_path, 'meta_info.npy'),target_location=save_path)
+    if update_anndata:
+        meta_info = np.load(os.path.join(save_path, 'meta_info.npy'),allow_pickle='TRUE').item()
+        return add_gating_to_anndata(adata,meta_info)
 
 def gating_strategy(adata, cluster_numbers, cluster_string, save_path=os.getcwd(), add_noise=True):
     """
