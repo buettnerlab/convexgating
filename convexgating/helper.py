@@ -1366,10 +1366,51 @@ def return_marker_combo_df(meta_info,run_ID,hierarchy):
 
 def add_gating_to_anndata(adata,meta_info):
     df_meta_dicts = {}
-    for key in range(len(meta_info)):
+    for key in range(len(meta_info['clusterkeys'])):
         df_meta = meta_info['general_summary'][key]
         filtered_columns = [col for col in df_meta.columns if col.startswith('final_gate_')]
         df_meta_filtered = df_meta[filtered_columns]
         df_meta_dicts[meta_info['clusterkeys'][key]] = df_meta_filtered
     adata.uns['gating'] = df_meta_dicts
+    return adata
+
+def add_gate_locations_to_anndata(adata,save_path):
+    cl_loc_all_dict = {}
+    cl_files = [file for file in os.listdir(save_path) if file.startswith('cluster')]
+    for cl_file in cl_files:
+        cl_loc_dict = {}
+        h_files_full_names = [file for file in os.listdir(os.path.join(save_path,cl_file)) if file.startswith(cl_file +'_gate_edges_hierarchy_')]
+        h_files_prelim_names = [s[s.find('hierarchy'):] if 'hierarchy' in s else '' for s in h_files_full_names]
+        h_files_ident = [q[:-4] for q in h_files_prelim_names]
+        for f in range(len(h_files_full_names)):
+            cl_loc_dict[h_files_ident[f]] = pd.read_csv(os.path.join(os.path.join(save_path,cl_file),h_files_full_names[f]),index_col =0)
+        cl_loc_all_dict[cl_file[8:]] = cl_loc_dict
+    adata.uns['gate_locations'] = cl_loc_all_dict
+    return adata
+    
+
+def add_performance_to_anndata(adata,save_path):
+    cl_perf_dict = {}
+    cl_files = [file for file in os.listdir(save_path) if file.startswith('cluster')]
+    for cl_file in cl_files:
+       cl_perf_dict[cl_file[8:]] = pd.read_csv(os.path.join(os.path.join(save_path,cl_file),'performance.csv'),index_col =0)
+    adata.uns['gating_performance'] = cl_perf_dict
+    return adata
+
+def add_marker_summary_to_anndata(adata,save_path):
+    adata.uns['gating_marker_summary'] = pd.read_csv(os.path.join(save_path,'marker_summary.csv'),index_col =0)
+    return adata
+
+
+def add_performance_summary_to_anndata(adata,save_path):
+    adata.uns['gating_performance_summary'] = pd.read_csv(os.path.join(save_path,'performance_summary.csv'),index_col =0)
+    return adata
+    
+def updata_anndata_uns(adata,save_path):
+    meta_info = np.load(os.path.join(save_path, 'meta_info.npy'),allow_pickle='TRUE').item()
+    adata = add_gating_to_anndata(adata,meta_info)
+    adata = add_gate_locations_to_anndata(adata,save_path)
+    adata = add_performance_to_anndata(adata,save_path)
+    adata = add_marker_summary_to_anndata(adata,save_path)
+    adata = add_performance_summary_to_anndata(adata,save_path)
     return adata
