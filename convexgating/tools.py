@@ -72,6 +72,27 @@ from .plotting import do_HEAT_non_targets, do_HEAT_targets, do_plot_metrics, do_
 warnings.filterwarnings("ignore")
 
 def CONVEX_GATING(adata,cluster_numbers,cluster_string,save_path=os.getcwd(), add_noise=True, update_anndata=True):
+    """
+    Deriving gating strategies for selected clusters.
+
+    Parameters
+    -----------
+    - adata (object): AnnData object, label information in adata.obs
+    - cluster_numbers (list): List containing the cluster numbers/names to derive gating strategies for 
+    - cluster_string (str):  Column name in adata.obs with label/cluster information corresponding to cluster_numbers
+    - save_path (str): Path to folder where gating output will be saved. Creates folder if not existent.
+    - add_noise (bool): Binary parameter indicating whether small amount of random noise is added for internal stability
+    - update_anndata (bool): Binary parameter indicating whether gating output is saved in adata.uns in addition to putput folder
+    
+    Returns
+    -----------
+    - adata (object): AnnData object containing gating information if updata_anndata == True
+
+    Note
+    -----------
+    - Gating output saved in location specified by save_path parameter.
+    """
+    
     gating_strategy(adata = adata,
                          cluster_numbers = cluster_numbers,
                          cluster_string = cluster_string,
