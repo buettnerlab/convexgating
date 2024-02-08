@@ -1297,6 +1297,7 @@ def add_tight_analysis(meta_info,run_ID,save_loc):
                                run_ID = run_ID)
         edge_save_loc = os.path.join(save_loc,'cluster_' + population + '_gate_edges_hierarchy_' + str(hierarchy) + '.csv')
         pd.DataFrame(edge_points,columns = ['x_coordinate','y_coordinate']).to_csv(edge_save_loc)
+    return base_df
         
 def plot_metric_tight(meta_info,run_ID,save_loc,save=True,show=True):
     #save_loc -> path to where 'performance.csv' is saved
@@ -1364,6 +1365,7 @@ def return_marker_combo_df(meta_info,run_ID,hierarchy):
     marker_df['cluster'] = meta_info['clusterkeys'][run_ID]
     return marker_df
 
+'''
 def add_gating_to_anndata(adata,meta_info):
     df_meta_dicts = {}
     for key in range(len(meta_info['clusterkeys'])):
@@ -1373,6 +1375,11 @@ def add_gating_to_anndata(adata,meta_info):
         df_meta_filtered = df_meta_filtered.drop(columns=['final_gate_0'])
         df_meta_dicts[meta_info['clusterkeys'][key]] = df_meta_filtered
     adata.uns['gating'] = df_meta_dicts
+    return adata
+'''
+
+def add_gating_to_anndata(adata,target_location):
+    adata.uns['gating'] = np.load(os.path.join(target_location,'info_gate_membership.npy'),allow_pickle=True).item()
     return adata
 
 def add_gate_locations_to_anndata(adata,save_path):
@@ -1409,7 +1416,7 @@ def add_performance_summary_to_anndata(adata,save_path):
     
 def updata_anndata_uns(adata,save_path):
     meta_info = np.load(os.path.join(save_path, 'meta_info.npy'),allow_pickle='TRUE').item()
-    adata = add_gating_to_anndata(adata,meta_info)
+    adata = add_gating_to_anndata(adata,save_path)
     adata = add_gate_locations_to_anndata(adata,save_path)
     adata = add_performance_to_anndata(adata,save_path)
     adata = add_marker_summary_to_anndata(adata,save_path)

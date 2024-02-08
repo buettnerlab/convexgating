@@ -895,9 +895,12 @@ def convex_hull_add_on(meta_info_path,target_location,add_summary = True):
     meta_info = np.load(meta_info_path,allow_pickle=True).item()
     cluster_IDs = list(meta_info['clusterkeys'].keys())
     cluster_names = list((meta_info['clusterkeys'].values()))
+    base_df_dict = {}
     for cluster_ID in cluster_IDs:
-        add_tight_analysis(meta_info,cluster_ID,os.path.join(target_location, 'cluster_' + cluster_names[cluster_ID]))
+        base_df = add_tight_analysis(meta_info,cluster_ID,os.path.join(target_location, 'cluster_' + cluster_names[cluster_ID]))
+        base_df_dict[meta_info['clusterkeys'][cluster_ID]] = base_df.filter(regex=r'^gate_hull_(?!0)')
         plot_metric_tight(meta_info,cluster_ID,os.path.join(target_location, 'cluster_' + cluster_names[cluster_ID]),save=True,show=True)
+    np.save(os.path.join(target_location, "info_gate_membership.npy"), base_df_dict)
     if add_summary:
         make_performance_summary(meta_info_path = meta_info_path,target_location=target_location)
         make_marker_summary(meta_info_path,target_location=target_location)
