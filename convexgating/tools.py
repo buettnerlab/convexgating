@@ -71,7 +71,7 @@ from .plotting import do_HEAT_non_targets, do_HEAT_targets, do_plot_metrics, do_
 
 warnings.filterwarnings("ignore")
 
-def CONVEX_GATING(adata,cluster_numbers,cluster_string,save_path=os.getcwd(), add_noise=True, update_anndata=True):
+def CONVEX_GATING(adata,cluster_numbers,cluster_string,save_path=os.getcwd(), add_noise=True, update_anndata=True,focus="f1"):
     """
     Deriving gating strategies for selected clusters.
 
@@ -83,6 +83,7 @@ def CONVEX_GATING(adata,cluster_numbers,cluster_string,save_path=os.getcwd(), ad
     - save_path (str): Path to folder where gating output will be saved. Creates folder if not existent.
     - add_noise (bool): Binary parameter indicating whether small amount of random noise is added for internal stability
     - update_anndata (bool): Binary parameter indicating whether gating output is saved in adata.uns in addition to putput folder
+    - focus (str): "f1" or "recall", whether CG focusses on high f1 (default) or high recall
     
     Returns
     -----------
@@ -97,12 +98,12 @@ def CONVEX_GATING(adata,cluster_numbers,cluster_string,save_path=os.getcwd(), ad
                          cluster_numbers = cluster_numbers,
                          cluster_string = cluster_string,
                          save_path=save_path,
-                             add_noise = add_noise)
+                             add_noise = add_noise,focus=focus)
     convex_hull_add_on(meta_info_path = os.path.join(save_path, 'meta_info.npy'),target_location=save_path)
     if update_anndata:
         return updata_anndata_uns(adata,save_path)
 
-def gating_strategy(adata, cluster_numbers, cluster_string, save_path=os.getcwd(), add_noise=True):
+def gating_strategy(adata, cluster_numbers, cluster_string, save_path=os.getcwd(), add_noise=True,focus="f1"):
     """
     Learning gating strategy for specific cell clusters.
 
@@ -117,6 +118,8 @@ def gating_strategy(adata, cluster_numbers, cluster_string, save_path=os.getcwd(
         column name in adata.obs where cluster labels are found, e.g 'louvain'
     add_noise : True or False
         if True add small amount of nice to count data for more stable internal procedures
+    focus: "f1" or "recall" 
+        default focus "f1", optional "recall"
     """
     if add_noise:
         adata.X = adata.X + (np.random.rand(adata.X.shape[0], adata.X.shape[1]) - 0.5) / 10000
@@ -151,6 +154,7 @@ def gating_strategy(adata, cluster_numbers, cluster_string, save_path=os.getcwd(
         save_metrics_plot=save_metrics_plot,
         show_metrics_plot=show_metrics_plot,
         save_path=save_path,
+        focus=focus,
     )
     # print('Checkpoint 7')
     meta_info = {}
@@ -190,6 +194,7 @@ def FIND_GATING_STRATEGY(
     save_metrics_plot=True,
     show_metrics_plot=True,
     save_path=os.getcwd(),
+    focus = "f1",
 ):
     """
     Finding a gating strategy.
@@ -234,6 +239,7 @@ def FIND_GATING_STRATEGY(
         DESCRIPTION. The default is 'heuristic'.
     show_everything : boolean, optional
         True if gating procedure should be visualized, False if not. The default is True.
+    focus: "f1" or "recall" -> default focus "f1", optional "recall"
 
     Returns
     -------
@@ -273,6 +279,7 @@ def FIND_GATING_STRATEGY(
         show_everything=False,
         max_try=5,
         marker_sel=marker_sel,
+        focus=focus,
     )
 
     clust_string_dict, re_gating_dict, general_dict = process_results(
@@ -320,6 +327,7 @@ def do_complete_gating(
     show_everything=False,
     max_try=5,
     marker_sel="heuristic",
+    focus = "f1",
 ):
     """
     Parameters
@@ -364,6 +372,7 @@ def do_complete_gating(
     # marker_sel: string, marker selection method either 'heuristic' (default)
     #                                                   'tree' (based on Decision Tree)
     #                                                   'svm'  (based on Linear SVM)
+    #focus: "f1" or "recall" -> default focus "f1", optional "recall"
     # outputs:
     # result_grid_df: data frame with result and information on hyperparameters
     # results_dictionaries: dictionary -> precise information on gate locations per hierarchy
@@ -389,72 +398,136 @@ def do_complete_gating(
     renorm_df_dict = {}
     results_dictionaries = {}
     res_in_gates = {}
+    print(focus)
     for key, cluster_number in enumerate(cluster_numbers):
         # print(key)
         fail = 0
         count = 0
         while (fail == 0) & (count < max_try):
             # print('Checkpoint 2')
-            try:
-                (
-                    f1,
-                    best_hierarchy,
-                    summary_gating_dicts,
-                    summary_losses_dicts,
-                    target_df_dicts,
-                    renorm_df,
-                    res_in_gate,
-                ) = do_adaptive_grid_search(
-                    cell_data,
-                    channels,
-                    cluster_number,
-                    nr_max_hierarchies=nr_max_hierarchies,
-                    cluster_string=cluster_string,
-                    visualize_gate=visualize_gate,
-                    PC=PC,
-                    learning_rate=learning_rate,
-                    iterations=iterations,
-                    nr_hyperplanes=nr_hyperplanes,
-                    batch_size=batch_size,
-                    grid_divisor=grid_divisor,
-                    arange_init=arange_init,
-                    refinement_grid_search=refinement_grid_search,
-                    weight_version=weight_version,
-                    marker_sel=marker_sel,
-                    show_everything=show_everything,
-                )
+            if focus == "f1":
+                try:
+                    (
+                        f1,
+                        best_hierarchy,
+                        summary_gating_dicts,
+                        summary_losses_dicts,
+                        target_df_dicts,
+                        renorm_df,
+                        res_in_gate,
+                    ) = do_adaptive_grid_search(
+                        cell_data,
+                        channels,
+                        cluster_number,
+                        nr_max_hierarchies=nr_max_hierarchies,
+                        cluster_string=cluster_string,
+                        visualize_gate=visualize_gate,
+                        PC=PC,
+                        learning_rate=learning_rate,
+                        iterations=iterations,
+                        nr_hyperplanes=nr_hyperplanes,
+                        batch_size=batch_size,
+                        grid_divisor=grid_divisor,
+                        arange_init=arange_init,
+                        refinement_grid_search=refinement_grid_search,
+                        weight_version=weight_version,
+                        marker_sel=marker_sel,
+                        show_everything=show_everything,
+                    )
+                    # write results to dictionary
+                    res_tmp = {
+                        "key": key,
+                        "nr_max_hierarchies": nr_max_hierarchies,
+                        "learning_rate": learning_rate,
+                        "iterations": iterations,
+                        "nr_hyperplanes": nr_hyperplanes,
+                        "batch_size": batch_size,
+                        "grid_divisor": grid_divisor,
+                        "arange_init": arange_init,
+                        "refinement_grid_search": refinement_grid_search,
+                        "weight_version": weight_version,
+                        "cluster_number": cluster_number,
+                        "f1": f1,
+                        "best_hierarchy": best_hierarchy,
+                    }
+        
+                    result_grid_df = result_grid_df.append(res_tmp, ignore_index=True)
+        
+                    results_dictionaries[key] = [target_df_dicts, summary_gating_dicts]
+        
+                    renorm_df_dict[key] = renorm_df.copy()
+                    res_in_gates[key] = res_in_gate.copy()
+                    # key += 1
+                    # quit while-loop
+                    fail = 1
+                    # print(f1)
+                except Exception:
+                    count += 1
+            if count == max_try:
+                print("failed")                
+                    
+            if focus == "recall":
+                try:
+                    (
+                        f1,
+                        best_hierarchy,
+                        summary_gating_dicts,
+                        summary_losses_dicts,
+                        target_df_dicts,
+                        renorm_df,
+                        res_in_gate,
+                    ) = do_adaptive_grid_search_recall_focus(
+                        cell_data,
+                        channels,
+                        cluster_number,
+                        nr_max_hierarchies=nr_max_hierarchies,
+                        cluster_string=cluster_string,
+                        visualize_gate=visualize_gate,
+                        PC=PC,
+                        learning_rate=learning_rate,
+                        iterations=iterations,
+                        nr_hyperplanes=nr_hyperplanes,
+                        batch_size=batch_size,
+                        grid_divisor=grid_divisor,
+                        arange_init=arange_init,
+                        refinement_grid_search=refinement_grid_search,
+                        weight_version=weight_version,
+                        marker_sel=marker_sel,
+                        show_everything=show_everything,
+                    )
+                
 
-                # write results to dictionary
-                res_tmp = {
-                    "key": key,
-                    "nr_max_hierarchies": nr_max_hierarchies,
-                    "learning_rate": learning_rate,
-                    "iterations": iterations,
-                    "nr_hyperplanes": nr_hyperplanes,
-                    "batch_size": batch_size,
-                    "grid_divisor": grid_divisor,
-                    "arange_init": arange_init,
-                    "refinement_grid_search": refinement_grid_search,
-                    "weight_version": weight_version,
-                    "cluster_number": cluster_number,
-                    "f1": f1,
-                    "best_hierarchy": best_hierarchy,
-                }
-
-                result_grid_df = result_grid_df.append(res_tmp, ignore_index=True)
-
-                results_dictionaries[key] = [target_df_dicts, summary_gating_dicts]
-
-                renorm_df_dict[key] = renorm_df.copy()
-                res_in_gates[key] = res_in_gate.copy()
-                # key += 1
-                # quit while-loop
-                fail = 1
-                # print(f1)
-            except Exception:
-                count += 1
-        if count == max_try:
-            print("failed")
+                    # write results to dictionary
+                    res_tmp = {
+                        "key": key,
+                        "nr_max_hierarchies": nr_max_hierarchies,
+                        "learning_rate": learning_rate,
+                        "iterations": iterations,
+                        "nr_hyperplanes": nr_hyperplanes,
+                        "batch_size": batch_size,
+                        "grid_divisor": grid_divisor,
+                        "arange_init": arange_init,
+                        "refinement_grid_search": refinement_grid_search,
+                        "weight_version": weight_version,
+                        "cluster_number": cluster_number,
+                        "f1": f1,
+                        "best_hierarchy": best_hierarchy,
+                    }
+    
+                    result_grid_df = result_grid_df.append(res_tmp, ignore_index=True)
+    
+                    results_dictionaries[key] = [target_df_dicts, summary_gating_dicts]
+    
+                    renorm_df_dict[key] = renorm_df.copy()
+                    res_in_gates[key] = res_in_gate.copy()
+                    # key += 1
+                    # quit while-loop
+                    fail = 1
+                    # print(f1)
+                except Exception:
+                    count += 1
+                
+           
         # print('Checkpoint 3')
 
     return result_grid_df, results_dictionaries, renorm_df_dict, res_in_gates
@@ -657,8 +730,8 @@ def do_adaptive_grid_search(  # noqa: max-complexity: 19
                         bound2 + 2 * (bound2 - bound1) / grid_divisor,
                         (bound2 - bound1) / grid_divisor,
                     )
-                # best_penalty_strength = bound1
-                # print(best_penalty_strength)
+                best_penalty_strength = bound1
+                print(best_penalty_strength)
         except Exception:
             pass
 
@@ -904,3 +977,229 @@ def convex_hull_add_on(meta_info_path,target_location,add_summary = True):
     if add_summary:
         make_performance_summary(meta_info_path = meta_info_path,target_location=target_location)
         make_marker_summary(meta_info_path,target_location=target_location)
+
+def do_adaptive_grid_search_recall_focus(  # noqa: max-complexity: 19
+    cell_data,
+    channels,
+    cluster_number,
+    first_hierarchy=1,
+    nr_max_hierarchies=5,
+    cluster_string="louvain",
+    PC=True,
+    visualize_gate=False,
+    learning_rate=0.05,
+    iterations=50,
+    nr_hyperplanes=8,
+    batch_size=5000,
+    grid_divisor=2,
+    arange_init=[0, 2, 4, 8, 10],
+    refinement_grid_search=2,
+    weight_version=1,
+    marker_sel="heuristic",
+    show_everything=True,
+):
+    """
+    Recipe function for adaptive grid search to find an optimal gate
+
+    Parameters
+    ----------
+    cell_data : pd.DataFrame
+        with columns markers and cluster_string, rows -> cell values.
+    channels : list
+        a list of strings to indicate which channels to use for gating.
+    cluster_number : str
+        categories of cluster_string.
+    first_hierarchy : TYPE, optional
+        DESCRIPTION. The default is 1.
+    nr_max_hierarchies : TYPE, optional
+        DESCRIPTION. The default is 5.
+    cluster_string : TYPE, optional
+        DESCRIPTION. The default is 'louvain'.
+    PC : TYPE, optional
+        DESCRIPTION. The default is True.
+    visualize_gate : TYPE, optional
+        DESCRIPTION. The default is False.
+    learning_rate : TYPE, optional
+        DESCRIPTION. The default is 0.05.
+    iterations : TYPE, optional
+        DESCRIPTION. The default is 50.
+    nr_hyperplanes : TYPE, optional
+        DESCRIPTION. The default is 8.
+    batch_size : TYPE, optional
+        DESCRIPTION. The default is 5000.
+    grid_divisor : TYPE, optional
+        DESCRIPTION. The default is 2.
+    arange_init : TYPE, optional
+        DESCRIPTION. The default is [0,2,4,8,10].
+    refinement_grid_search : TYPE, optional
+        DESCRIPTION. The default is 2.
+    weight_version : int, optional
+        0,1,2 -> if 0 : negative proportional
+              -> if 1 : negative proportional only if more non-targets than targets -> otherwise equal weight
+              -> if 2 : always equal weight. The default is 1.
+    marker_sel : TYPE, optional
+        DESCRIPTION. The default is 'heuristic'.
+    show_everything : boolean, optional
+        True if gating procedure should be visualized, False if not. The default is True.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+    best_hierarchy : list
+        list of hierarchies for an optimal gating panel.
+    summary_gating_dicts : dict
+        summary of gating results per hierarchy.
+    summary_losses_dicts : dict
+        summary of the loss function results per hierarchy.
+    target_df_dicts : dict of pandas DataFrames
+        indicating whether a cell is part of a gate or not.
+    renorm_df : TYPE
+        DESCRIPTION.
+    in_gate_dicts : TYPE
+        DESCRIPTION.
+
+    """
+
+    filtered_obs = cell_data.copy()
+    renorm_df = normalization(filtered_obs, channels)
+    filtered_obs["label"] = (filtered_obs[cluster_string] == cluster_number) * 1
+    nr_total_targets_beginning = sum(filtered_obs["label"] == 1) * 1
+    combos_so_far = []
+    summary_gating_dicts = {}
+    in_gate_dicts = {}
+    summary_losses_dicts = {}
+    target_df_dicts = {}
+
+    # initialise
+    gating_dict = {}
+    losses_dict = {}
+    in_gate = (filtered_obs[cluster_string] == cluster_number) * 0
+
+    for hierarchy_nr in list(np.arange(first_hierarchy, nr_max_hierarchies + 1, 1)):
+        # print('Search markers')
+        try:
+            if marker_sel == "heuristic":
+                # start_time = time.time()
+                best_marker_combos = return_best_marker_combo(filtered_obs, channels)
+                # end_time = time.time()
+                # print('heuristic method : ' + str(np.round(end_time-start_time,4)) + ' sec')
+            if marker_sel == "tree":
+                # start_time = time.time()
+                best_marker_combos = return_best_marker_combo_single_tree(filtered_obs, channels)
+                # end_time = time.time()
+                # print('tree method : ' + str(np.round(end_time-start_time,4)) + ' sec')
+            if marker_sel == "svm":
+                # start_time = time.time()
+                best_marker_combos = return_best_marker_combo_single_svm(filtered_obs, channels)
+                # end_time = time.time()
+                # print('svm method : ' + str(np.round(end_time-start_time,4)) + ' sec')
+        except Exception:
+            hierarchy_nr -= 1
+            break
+        new_markers = get_new_marker_combo(best_marker_combos, combos_so_far)
+        # print('Found new markers')
+        marker1, marker2 = new_markers[0], new_markers[1]
+        combos_so_far.append(new_markers)
+        filtered_obs_temporary = filtered_obs[[marker1, marker2, "label", "cell_ID"]]
+        filtered_obs_temporary.rename(columns={"label": cluster_string}, inplace=True)
+        weight = fraction_targets_vanilla(filtered_obs_temporary, cluster_string)
+        if weight_version == 1:
+            if weight < 0:
+                weight = 0
+        if weight_version == 2:
+            weight = 0
+
+        current_best_f1 = -1
+        current_best_recall = -1
+        try:
+            arange = arange_init.copy()
+            for _ in range(refinement_grid_search):
+                # print('------------------------------------')
+                # print('Start new hierarchy')
+                # print('------------------------------------')
+                recall_list = []
+                f1_list = []
+                precision_list = []
+                # add_on = 0
+                for scale in arange:
+                    try:
+                        in_gate_cand, losses_dict_cand, gating_dict_cand = find_2D_gate(
+                            adata=filtered_obs_temporary,
+                            marker1=marker1,
+                            marker2=marker2,
+                            cluster_number=1,
+                            cluster_method=cluster_string,
+                            iterations=iterations,
+                            learning_rate=learning_rate,
+                            nr_hyperplanes=nr_hyperplanes,
+                            weight_factor_target=weight,
+                            batch_size=batch_size,
+                            visualize=show_everything,
+                            penalty_parameter2=scale,
+                            penalty_parameter=scale,
+                            PC=PC,
+                        )
+                        # total_targets = sum(filtered_obs_temporary['louvain'] == 1)
+                        recall = gating_dict_cand["tn_fp_fn_tp"][0][3] / nr_total_targets_beginning
+                        precision = gating_dict_cand["tn_fp_fn_tp"][0][3] / (
+                            gating_dict_cand["tn_fp_fn_tp"][0][3] + gating_dict_cand["tn_fp_fn_tp"][0][1]
+                        )
+                        f1 = 2 * (recall * precision) / (recall + precision)
+                        recall_list.append(recall)
+                        precision_list.append(precision)
+                        f1_list.append(f1)
+                        if recall > current_best_recall:
+                            in_gate = in_gate_cand.copy()
+                            losses_dict = losses_dict_cand.copy()
+                            gating_dict = gating_dict_cand.copy()
+                            current_best_recall = recall.copy()
+                    except Exception:
+                        pass
+
+                cleaned_list = list(np.array(recall_list)[np.logical_not(np.isnan(np.array(recall_list)))])
+                max_val = np.sort(cleaned_list)[-1]
+                second_max_val = np.sort(cleaned_list)[-2]
+                index2 = recall_list.index(second_max_val)
+                index1 = recall_list.index(max_val)
+                bound1 = arange[index1]
+                bound2 = arange[index2]
+                if bound1 > bound2:
+                    arange = np.arange(
+                        bound2 - (bound1 - bound2) / grid_divisor,
+                        bound1 + 2 * (bound1 - bound2) / grid_divisor,
+                        (bound1 - bound2) / grid_divisor,
+                    )
+                else:
+                    arange = np.arange(
+                        bound1 - (bound1 - bound2) / grid_divisor,
+                        bound2 + 2 * (bound2 - bound1) / grid_divisor,
+                        (bound2 - bound1) / grid_divisor,
+                    )
+                best_penalty_strength = bound1
+                print(best_penalty_strength)
+        except Exception:
+            pass
+
+        summary_gating_dicts[str(hierarchy_nr)] = gating_dict
+        summary_losses_dicts[str(hierarchy_nr)] = losses_dict
+        in_gate_dicts[str(hierarchy_nr)] = in_gate.copy()
+        target_df_dicts[str(hierarchy_nr)] = create_target_df(
+            filtered_obs, marker1, marker2, cluster_string, cluster_number
+        )
+        filtered_obs["gate"] = in_gate * 1
+        filtered_obs = filtered_obs[filtered_obs["gate"] == 1]
+        # print('hierarchy ' +str(hierarchy_nr) +' finished')
+    f1_total_list = only_f1(target_df_dicts, summary_gating_dicts, hierarchy_nr)
+    # best_f1_per_cluster.append(np.max(np.array(f1_total_list)))
+    best_hierarchy = f1_total_list.index(max(f1_total_list)) + 1
+    return (
+        max(f1_total_list),
+        best_hierarchy,
+        summary_gating_dicts,
+        summary_losses_dicts,
+        target_df_dicts,
+        renorm_df,
+        in_gate_dicts,
+    )
+    
