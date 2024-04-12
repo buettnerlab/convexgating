@@ -1,5 +1,4 @@
-convexgating
-===========================
+
 .. image:: https://raw.githubusercontent.com/buettnerlab/convexgating/add_parameter_option/figures/CG_logo_v1.PNG
    :width: 800
    :alt: overview
