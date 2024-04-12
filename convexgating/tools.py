@@ -398,7 +398,7 @@ def do_complete_gating(
     renorm_df_dict = {}
     results_dictionaries = {}
     res_in_gates = {}
-    print(focus)
+    #print(focus)
     for key, cluster_number in enumerate(cluster_numbers):
         # print(key)
         fail = 0
@@ -730,8 +730,8 @@ def do_adaptive_grid_search(  # noqa: max-complexity: 19
                         bound2 + 2 * (bound2 - bound1) / grid_divisor,
                         (bound2 - bound1) / grid_divisor,
                     )
-                best_penalty_strength = bound1
-                print(best_penalty_strength)
+                #best_penalty_strength = bound1
+                #print(best_penalty_strength)
         except Exception:
             pass
 
@@ -1176,8 +1176,8 @@ def do_adaptive_grid_search_recall_focus(  # noqa: max-complexity: 19
                         bound2 + 2 * (bound2 - bound1) / grid_divisor,
                         (bound2 - bound1) / grid_divisor,
                     )
-                best_penalty_strength = bound1
-                print(best_penalty_strength)
+                #best_penalty_strength = bound1
+                #print(best_penalty_strength)
         except Exception:
             pass
 
