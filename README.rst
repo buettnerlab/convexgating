@@ -1,5 +1,9 @@
 convexgating
 ===========================
+.. image:: https://raw.githubusercontent.com/buettnerlab/convexgating/main/figures/CG_logo_v1.PNG
+   :width: 800
+   :alt: overview
+
 
 |PyPI| |Python Version| |License| |Read the Docs| |Build| |Tests| |Codecov| |pre-commit| |Black|
 
