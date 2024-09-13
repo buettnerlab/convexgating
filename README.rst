@@ -55,9 +55,6 @@ The iterative procedure to find a suitable gate before applying the convex hull 
 
 Installation
 ------------
-
-### 1. Clone the repository
-
 .. code:: console
 
    $ git clone https://github.com/buettnerlab/convexgating.git
