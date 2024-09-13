@@ -56,11 +56,11 @@ The iterative procedure to find a suitable gate before applying the convex hull 
 Installation
 ------------
 
-You can install *convexgating* via pip_ from PyPI_:
+### 1. Clone the repository
 
-.. code:: console
+```bash
+git clone <repository_link>
 
-   $ pip install convexgating
 
 
 Usage
