@@ -57,9 +57,9 @@ Installation
 ------------
 .. code:: console
 
-   $ git clone https://github.com/buettnerlab/convexgating.git
-   $ cd convexgating
-   $ pip install -e .
+   git clone https://github.com/buettnerlab/convexgating.git
+   cd convexgating
+   pip install -e .
 
 
 
