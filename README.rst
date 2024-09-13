@@ -66,6 +66,7 @@ Installation
 
 Usage
 -----
+A usage example is available in the *docs/tutorials/tutorial_01.ipynb* file located in this repository
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 
