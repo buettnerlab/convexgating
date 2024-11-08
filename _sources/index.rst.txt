@@ -8,7 +8,6 @@ Welcome to convexgating's documentation!
    :caption: Contents:
 
    readme
-   installation
    usage
    api
    reference
