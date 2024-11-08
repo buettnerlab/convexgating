@@ -159,25 +159,34 @@
 
 <div class="viewcode-block" id="CONVEX_GATING"><a class="viewcode-back" href="../../api.html#convexgating.tools.CONVEX_GATING">[docs]</a><span class="k">def</span> <span class="nf">CONVEX_GATING</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span><span class="n">cluster_numbers</span><span class="p">,</span><span class="n">cluster_string</span><span class="p">,</span><span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_anndata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">focus</span><span class="o">=</span><span class="s2">&quot;f1&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Deriving gating strategies for selected clusters.</span>
+<span class="sd">    Derives gating strategies for selected clusters.</span>
 
 <span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
-<span class="sd">    - adata (object): AnnData object, label information in adata.obs</span>
-<span class="sd">    - cluster_numbers (list): List containing the cluster numbers/names to derive gating strategies for </span>
-<span class="sd">    - cluster_string (str):  Column name in adata.obs with label/cluster information corresponding to cluster_numbers</span>
-<span class="sd">    - save_path (str): Path to folder where gating output will be saved. Creates folder if not existent.</span>
-<span class="sd">    - add_noise (bool): Binary parameter indicating whether small amount of random noise is added for internal stability</span>
-<span class="sd">    - update_anndata (bool): Binary parameter indicating whether gating output is saved in adata.uns in addition to putput folder</span>
-<span class="sd">    - focus (str): &quot;f1&quot; or &quot;recall&quot;, whether CG focusses on high f1 (default) or high recall</span>
-<span class="sd">    </span>
-<span class="sd">    Returns</span>
-<span class="sd">    -----------</span>
-<span class="sd">    - adata (object): AnnData object containing gating information if updata_anndata == True</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adata : object</span>
+<span class="sd">        AnnData object, with label information in `adata.obs`.</span>
+<span class="sd">    cluster_numbers : list</span>
+<span class="sd">        List containing the cluster numbers or names to derive gating strategies for.</span>
+<span class="sd">    cluster_string : str</span>
+<span class="sd">        Column name in `adata.obs` with label or cluster information corresponding to `cluster_numbers`.</span>
+<span class="sd">    save_path : str, optional</span>
+<span class="sd">        Path to folder where gating output will be saved. Creates folder if it doesn&#39;t exist. Default is the current working directory.</span>
+<span class="sd">    add_noise : bool, optional</span>
+<span class="sd">        Indicates whether a small amount of random noise is added for internal stability. Default is `True`.</span>
+<span class="sd">    update_anndata : bool, optional</span>
+<span class="sd">        Indicates whether gating output is saved in `adata.uns` in addition to the output folder. Default is `True`.</span>
+<span class="sd">    focus : str, optional</span>
+<span class="sd">        Specifies whether CG focuses on high &quot;f1&quot; (default) or &quot;recall&quot;.</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    -----------</span>
-<span class="sd">    - Gating output saved in location specified by save_path parameter.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    adata : object</span>
+<span class="sd">        AnnData object containing gating information if `update_anndata` is `True`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Gating output is saved in the location specified by the `save_path` parameter.</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">gating_strategy</span><span class="p">(</span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">,</span>

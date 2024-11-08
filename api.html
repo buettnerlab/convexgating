@@ -109,32 +109,28 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="convexgating.tools.CONVEX_GATING">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">convexgating.tools.</span></span><span class="sig-name descname"><span class="pre">CONVEX_GATING</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_numbers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/work/convexgating/convexgating/docs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_anndata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">focus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'f1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convexgating/tools.html#CONVEX_GATING"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convexgating.tools.CONVEX_GATING" title="Permalink to this definition"></a></dt>
-<dd><p>Deriving gating strategies for selected clusters.</p>
+<dd><p>Derives gating strategies for selected clusters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>(</strong><strong>object</strong><strong>)</strong> (<em>- adata</em>) – </p></li>
-<li><p><strong>(</strong><strong>list</strong><strong>)</strong> (<em>- cluster_numbers</em>) – </p></li>
-<li><p><strong>(</strong><strong>str</strong><strong>)</strong> (<em>- focus</em>) – </p></li>
-<li><p><strong>(</strong><strong>str</strong><strong>)</strong> – </p></li>
-<li><p><strong>(</strong><strong>bool</strong><strong>)</strong> (<em>- update_anndata</em>) – </p></li>
-<li><p><strong>(</strong><strong>bool</strong><strong>)</strong> – </p></li>
-<li><p><strong>(</strong><strong>str</strong><strong>)</strong> – </p></li>
+<li><p><strong>adata</strong> (<em>object</em>) – AnnData object, with label information in <cite>adata.obs</cite>.</p></li>
+<li><p><strong>cluster_numbers</strong> (<em>list</em>) – List containing the cluster numbers or names to derive gating strategies for.</p></li>
+<li><p><strong>cluster_string</strong> (<em>str</em>) – Column name in <cite>adata.obs</cite> with label or cluster information corresponding to <cite>cluster_numbers</cite>.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to folder where gating output will be saved. Creates folder if it doesn’t exist. Default is the current working directory.</p></li>
+<li><p><strong>add_noise</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates whether a small amount of random noise is added for internal stability. Default is <cite>True</cite>.</p></li>
+<li><p><strong>update_anndata</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates whether gating output is saved in <cite>adata.uns</cite> in addition to the output folder. Default is <cite>True</cite>.</p></li>
+<li><p><strong>focus</strong> (<em>str</em><em>, </em><em>optional</em>) – Specifies whether CG focuses on high “f1” (default) or “recall”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>- adata (object)</strong></p>
+<dd class="field-even"><p><strong>adata</strong> – AnnData object containing gating information if <cite>update_anndata</cite> is <cite>True</cite>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>AnnData object containing gating information if updata_anndata == True</p>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>Gating output saved in location specified by save_path parameter.</p></li>
-</ul>
-</div>
+<p class="rubric">Notes</p>
+<p>Gating output is saved in the location specified by the <cite>save_path</cite> parameter.</p>
 </dd></dl>
 
 <dl class="py class">
