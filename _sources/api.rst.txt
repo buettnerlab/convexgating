@@ -17,5 +17,5 @@ Then use it
 
 gating_strategy
 ---------------
-
+.. autoclass:: convexgating.CONVEX_GATING
 .. autoclass:: convexgating.gating_strategy
