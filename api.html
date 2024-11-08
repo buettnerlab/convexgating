@@ -58,6 +58,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#import-convexgating">Import Convexgating</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gating-strategy">gating_strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#convexgating.tools.CONVEX_GATING"><code class="docutils literal notranslate"><span class="pre">CONVEX_GATING</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#convexgating.gating_strategy"><code class="docutils literal notranslate"><span class="pre">gating_strategy</span></code></a></li>
 </ul>
 </li>
@@ -105,6 +106,37 @@
 </section>
 <section id="gating-strategy">
 <h2>gating_strategy<a class="headerlink" href="#gating-strategy" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="convexgating.tools.CONVEX_GATING">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">convexgating.tools.</span></span><span class="sig-name descname"><span class="pre">CONVEX_GATING</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_numbers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/work/convexgating/convexgating/docs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_anndata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">focus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'f1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convexgating/tools.html#CONVEX_GATING"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convexgating.tools.CONVEX_GATING" title="Permalink to this definition"></a></dt>
+<dd><p>Deriving gating strategies for selected clusters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>object</strong><strong>)</strong> (<em>- adata</em>) – </p></li>
+<li><p><strong>(</strong><strong>list</strong><strong>)</strong> (<em>- cluster_numbers</em>) – </p></li>
+<li><p><strong>(</strong><strong>str</strong><strong>)</strong> (<em>- focus</em>) – </p></li>
+<li><p><strong>(</strong><strong>str</strong><strong>)</strong> – </p></li>
+<li><p><strong>(</strong><strong>bool</strong><strong>)</strong> (<em>- update_anndata</em>) – </p></li>
+<li><p><strong>(</strong><strong>bool</strong><strong>)</strong> – </p></li>
+<li><p><strong>(</strong><strong>str</strong><strong>)</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- adata (object)</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AnnData object containing gating information if updata_anndata == True</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Gating output saved in location specified by save_path parameter.</p></li>
+</ul>
+</div>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="convexgating.gating_strategy">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">convexgating.</span></span><span class="sig-name descname"><span class="pre">gating_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_numbers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/work/convexgating/convexgating/docs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">focus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'f1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convexgating/tools.html#gating_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convexgating.gating_strategy" title="Permalink to this definition"></a></dt>
