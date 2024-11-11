@@ -56,8 +56,6 @@
 <li class="toctree-l1"><a class="reference internal" href="readme.html#credits">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#usage-example-single-target-population">Usage Example -  Single Target Population</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage-example-multiple-target-population">Usage Example -  Multiple Target Population</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#core-functions">Core functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#convexgating.tools.CONVEX_GATING"><code class="docutils literal notranslate"><span class="pre">CONVEX_GATING</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#convexgating.tools.gating_strategy"><code class="docutils literal notranslate"><span class="pre">gating_strategy</span></code></a></li>
@@ -97,40 +95,6 @@
              
   <section id="api">
 <h1>API<a class="headerlink" href="#api" title="Permalink to this heading"></a></h1>
-<section id="usage-example-single-target-population">
-<h2>Usage Example -  Single Target Population<a class="headerlink" href="#usage-example-single-target-population" title="Permalink to this heading"></a></h2>
-<p>Generating gating strategy for cells or events labeled ‘cluster_A’ from an AnnData object (adata) using labels found in adata.obs[cluster_string].</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">import convexgating as cg</span>
-<span class="go">import scanpy as sc</span>
-
-<span class="go">adata = sc.read_h5ad(adata_path)</span>
-<span class="go">cluster_string = &#39;clustering&#39;                                       #column in adata.obs</span>
-<span class="go">target_cluster = &#39;cluster_A&#39;                                        #category in adata.obs[cluster_string]</span>
-<span class="go">save = save_path</span>
-<span class="go">cg.tools.CONVEX_GATING(adata=adata,</span>
-<span class="go">          cluster_numbers = [target_cluster],</span>
-<span class="go">          cluster_string = cluster_string,</span>
-<span class="go">          save_path=save)</span>
-</pre></div>
-</div>
-</section>
-<section id="usage-example-multiple-target-population">
-<h2>Usage Example -  Multiple Target Population<a class="headerlink" href="#usage-example-multiple-target-population" title="Permalink to this heading"></a></h2>
-<p>Generating a series of gating strategies for cells or events labeled ‘cluster_A’,’cluster_B’,’cluster_C’ from an AnnData object (adata) using labels found in adata.obs[cluster_string].</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">import convexgating as cg</span>
-<span class="go">import scanpy as sc</span>
-
-<span class="go">adata = sc.read_h5ad(adata_path)</span>
-<span class="go">cluster_string = &#39;clustering&#39;                                          #column in adata.obs</span>
-<span class="go">target_clusters = [&#39;cluster_A&#39;,&#39;cluster_B&#39;,&#39;cluster_C&#39;]                #categories in adata.obs[cluster_string]</span>
-<span class="go">save = save_path</span>
-<span class="go">cg.tools.CONVEX_GATING(adata=adata,</span>
-<span class="go">          cluster_numbers = target_clusters,</span>
-<span class="go">          cluster_string = cluster_string,</span>
-<span class="go">          save_path=save)</span>
-</pre></div>
-</div>
-</section>
 <section id="core-functions">
 <h2>Core functions<a class="headerlink" href="#core-functions" title="Permalink to this heading"></a></h2>
 <dl class="py class">
