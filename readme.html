@@ -52,7 +52,13 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#single-target-population">Single Target Population</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-target-population">Multiple Target Population</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-details">Further Details</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="#credits">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -106,8 +112,48 @@ For each cluster, it reports the purity (precision), yield (recall) and the harm
 </section>
 <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
-<p>A usage example is available in the <em>docs/tutorials/tutorial_01.ipynb</em> file located in this repository</p>
-<p>Please see the <a class="reference external" href="https://convexgating.readthedocs.io/en/latest/usage.html">Command-line Reference</a> for details.</p>
+<section id="single-target-population">
+<h2>Single Target Population<a class="headerlink" href="#single-target-population" title="Permalink to this heading"></a></h2>
+<p>Generating gating strategy for cells or events labeled ‘cluster_A’ from an AnnData object (adata) using labels found in adata.obs[cluster_string].</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">import convexgating as cg</span>
+<span class="go">import scanpy as sc</span>
+
+<span class="go">adata = sc.read_h5ad(adata_path)</span>
+<span class="go">cluster_string = &#39;clustering&#39;                                       #column in adata.obs</span>
+<span class="go">target_cluster = &#39;cluster_A&#39;                                        #category in adata.obs[cluster_string]</span>
+<span class="go">save = save_path</span>
+<span class="go">cg.tools.CONVEX_GATING(adata=adata,</span>
+<span class="go">          cluster_numbers = [target_cluster],</span>
+<span class="go">          cluster_string = cluster_string,</span>
+<span class="go">          save_path=save)</span>
+</pre></div>
+</div>
+</section>
+<section id="multiple-target-population">
+<h2>Multiple Target Population<a class="headerlink" href="#multiple-target-population" title="Permalink to this heading"></a></h2>
+<p>Generating a series of gating strategies for cells or events labeled ‘cluster_A’,’cluster_B’,’cluster_C’ from an AnnData object (adata) using labels found in adata.obs[cluster_string].</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">import convexgating as cg</span>
+<span class="go">import scanpy as sc</span>
+
+<span class="go">adata = sc.read_h5ad(adata_path)</span>
+<span class="go">cluster_string = &#39;clustering&#39;                                          #column in adata.obs</span>
+<span class="go">target_clusters = [&#39;cluster_A&#39;,&#39;cluster_B&#39;,&#39;cluster_C&#39;]                #categories in adata.obs[cluster_string]</span>
+<span class="go">save = save_path</span>
+<span class="go">cg.tools.CONVEX_GATING(adata=adata,</span>
+<span class="go">          cluster_numbers = target_clusters,</span>
+<span class="go">          cluster_string = cluster_string,</span>
+<span class="go">          save_path=save)</span>
+</pre></div>
+</div>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h2>
+<p>A usage example is available in the <em>docs/tutorials/tutorial_01.ipynb</em> file located in this repository.</p>
+</section>
+<section id="further-details">
+<h2>Further Details<a class="headerlink" href="#further-details" title="Permalink to this heading"></a></h2>
+<p>Please see the <a class="reference external" href="https://convexgating.readthedocs.io/en/latest/usage.html">Command-line Reference</a> for further details.</p>
+</section>
 </section>
 <section id="credits">
 <h1>Credits<a class="headerlink" href="#credits" title="Permalink to this heading"></a></h1>
