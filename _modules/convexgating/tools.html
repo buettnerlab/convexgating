@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>convexgating.tools &mdash; convexgating 0.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
       <link rel="stylesheet" type="text/css" href="../../_static/custom_cookietemple.css?v=057798b9" />
@@ -85,16 +85,16 @@
              
   <h1>Source code for convexgating.tools</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="c1"># import time</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sklearn</span>
 
-<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">GradientDescentMulti</span><span class="p">,</span>
     <span class="n">apply_convex_hull</span><span class="p">,</span>
     <span class="n">classify_points</span><span class="p">,</span>
@@ -132,7 +132,7 @@
     <span class="n">add_performance_summary_to_anndata</span><span class="p">,</span>
     <span class="n">updata_anndata_uns</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.hyperparameters</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.hyperparameters</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">PC</span><span class="p">,</span>
     <span class="n">arange_init</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">,</span>
@@ -153,11 +153,11 @@
     <span class="n">show_SCATTER</span><span class="p">,</span>
     <span class="n">weight_version</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.plotting</span> <span class="kn">import</span> <span class="n">do_HEAT_non_targets</span><span class="p">,</span> <span class="n">do_HEAT_targets</span><span class="p">,</span> <span class="n">do_plot_metrics</span><span class="p">,</span> <span class="n">do_SCATTER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">do_HEAT_non_targets</span><span class="p">,</span> <span class="n">do_HEAT_targets</span><span class="p">,</span> <span class="n">do_plot_metrics</span><span class="p">,</span> <span class="n">do_SCATTER</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CONVEX_GATING"><a class="viewcode-back" href="../../api.html#convexgating.tools.CONVEX_GATING">[docs]</a><span class="k">def</span> <span class="nf">CONVEX_GATING</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span><span class="n">cluster_numbers</span><span class="p">,</span><span class="n">cluster_string</span><span class="p">,</span><span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_anndata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">focus</span><span class="o">=</span><span class="s2">&quot;f1&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="CONVEX_GATING"><a class="viewcode-back" href="../../api.html#convexgating.tools.CONVEX_GATING">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">CONVEX_GATING</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span><span class="n">cluster_numbers</span><span class="p">,</span><span class="n">cluster_string</span><span class="p">,</span><span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_anndata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">focus</span><span class="o">=</span><span class="s2">&quot;f1&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Derives gating strategies for selected clusters.</span>
 
@@ -198,7 +198,7 @@
     <span class="k">if</span> <span class="n">update_anndata</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">updata_anndata_uns</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span><span class="n">save_path</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="gating_strategy"><a class="viewcode-back" href="../../api.html#convexgating.tools.gating_strategy">[docs]</a><span class="k">def</span> <span class="nf">gating_strategy</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">cluster_numbers</span><span class="p">,</span> <span class="n">cluster_string</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">focus</span><span class="o">=</span><span class="s2">&quot;f1&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="gating_strategy"><a class="viewcode-back" href="../../api.html#convexgating.tools.gating_strategy">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">gating_strategy</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">cluster_numbers</span><span class="p">,</span> <span class="n">cluster_string</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">focus</span><span class="o">=</span><span class="s2">&quot;f1&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Learning gating strategy for specific cell clusters.</span>
 
@@ -260,7 +260,7 @@
     <span class="c1"># np.load(&#39;meta_info.npy&#39;,allow_pickle=&#39;TRUE&#39;).item() to read again</span>
 
 
-<span class="k">def</span> <span class="nf">FIND_GATING_STRATEGY</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">FIND_GATING_STRATEGY</span><span class="p">(</span>
     <span class="n">cell_data</span><span class="p">,</span>
     <span class="n">channels</span><span class="p">,</span>
     <span class="n">cluster_numbers</span><span class="p">,</span>
@@ -402,7 +402,7 @@
     <span class="k">return</span> <span class="n">clust_string_dict</span><span class="p">,</span> <span class="n">re_gating_dict</span><span class="p">,</span> <span class="n">general_dict</span>
 
 
-<span class="k">def</span> <span class="nf">do_complete_gating</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">do_complete_gating</span><span class="p">(</span>
     <span class="n">cell_data</span><span class="p">,</span>
     <span class="n">channels</span><span class="p">,</span>
     <span class="n">cluster_numbers</span><span class="p">,</span>
@@ -628,7 +628,7 @@
     <span class="k">return</span> <span class="n">result_grid_df</span><span class="p">,</span> <span class="n">results_dictionaries</span><span class="p">,</span> <span class="n">renorm_df_dict</span><span class="p">,</span> <span class="n">res_in_gates</span>
 
 
-<span class="k">def</span> <span class="nf">do_adaptive_grid_search</span><span class="p">(</span>  <span class="c1"># noqa: max-complexity: 19</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">do_adaptive_grid_search</span><span class="p">(</span>  <span class="c1"># noqa: max-complexity: 19</span>
     <span class="n">cell_data</span><span class="p">,</span>
     <span class="n">channels</span><span class="p">,</span>
     <span class="n">cluster_number</span><span class="p">,</span>
@@ -853,7 +853,7 @@
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">find_2D_gate</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_2D_gate</span><span class="p">(</span>
     <span class="n">adata</span><span class="p">,</span>
     <span class="n">marker1</span><span class="p">,</span>
     <span class="n">marker2</span><span class="p">,</span>
@@ -971,7 +971,7 @@
     <span class="k">return</span> <span class="n">in_gate</span><span class="p">,</span> <span class="n">final_dict</span><span class="p">,</span> <span class="n">gating_dict</span>
 
 
-<span class="k">def</span> <span class="nf">generate_output</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_output</span><span class="p">(</span>
     <span class="n">clust_string</span><span class="p">,</span>
     <span class="n">re_gating_dict</span><span class="p">,</span>
     <span class="n">general</span><span class="p">,</span>
@@ -1057,7 +1057,7 @@
             <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
         <span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">convex_hull_add_on</span><span class="p">(</span><span class="n">meta_info_path</span><span class="p">,</span><span class="n">target_location</span><span class="p">,</span><span class="n">add_summary</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convex_hull_add_on</span><span class="p">(</span><span class="n">meta_info_path</span><span class="p">,</span><span class="n">target_location</span><span class="p">,</span><span class="n">add_summary</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="c1">#meta_info_path: path to folder where meta info is saved</span>
     <span class="c1">#target_location: path to folder where results with convex hull should be saved</span>
     <span class="n">meta_info</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">meta_info_path</span><span class="p">,</span><span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
@@ -1073,7 +1073,7 @@
         <span class="n">make_performance_summary</span><span class="p">(</span><span class="n">meta_info_path</span> <span class="o">=</span> <span class="n">meta_info_path</span><span class="p">,</span><span class="n">target_location</span><span class="o">=</span><span class="n">target_location</span><span class="p">)</span>
         <span class="n">make_marker_summary</span><span class="p">(</span><span class="n">meta_info_path</span><span class="p">,</span><span class="n">target_location</span><span class="o">=</span><span class="n">target_location</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">do_adaptive_grid_search_recall_focus</span><span class="p">(</span>  <span class="c1"># noqa: max-complexity: 19</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">do_adaptive_grid_search_recall_focus</span><span class="p">(</span>  <span class="c1"># noqa: max-complexity: 19</span>
     <span class="n">cell_data</span><span class="p">,</span>
     <span class="n">channels</span><span class="p">,</span>
     <span class="n">cluster_number</span><span class="p">,</span>
