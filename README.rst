@@ -61,7 +61,7 @@ Installation
    cd convexgating
    pip install -e .
 
-
+Installation time should not exceed 5 minutes. Installation has been successfully tested on Windows and Linux operating systems. We experienced issues with MacOS with Apple Silicon M1/M2 CPUs.
 
 
 Usage
