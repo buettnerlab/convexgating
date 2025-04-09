@@ -38,7 +38,7 @@
 Features
 --------
 
-Convex gating is a Python package to infer an optimal gating strategy from flow, cyTOF or Ab/CITE-seq data. Convex gating expects a labelled input (for instance, from clustering) and returns a gating panel to separate the selected group of events (e.g. a cluster) from all other events (see Fig. 1a).
+ConvexGating is a Python package to infer an optimal gating strategy from flow, cyTOF or Ab/CITE-seq data. Convex gating expects a labelled input (for instance, from clustering) and returns a gating panel to separate the selected group of events (e.g. a cluster) from all other events (see Fig. 1a).
 For each cluster, it reports the purity (precision), yield (recall) and the harmonic mean of both metrics (F1 score) for each gate hierarchy and the entire gating strategy. It relies on the scanpy/anndata for the data format and data pre-processing and further on PyTorch for stochastic gradient descent. Therefore, resulting gates may slightly vary.
 
 .. image:: https://raw.githubusercontent.com/buettnerlab/convexgating/main/figures/fig1_v4.PNG
@@ -55,6 +55,14 @@ The iterative procedure to find a suitable gate before applying the convex hull 
 
 Installation
 ------------
+We recommend using Python 3.9 and setting up a new conda environment.
+
+.. code:: console
+
+   conda create -n ConvexGating_env python=3.9
+   conda activate ConvexGating_env
+
+Then, install ConvexGating the following way.
 .. code:: console
 
    git clone https://github.com/buettnerlab/convexgating.git
