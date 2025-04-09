@@ -63,6 +63,7 @@ We recommend using Python 3.9 and setting up a new conda environment.
    conda activate ConvexGating_env
 
 Then, install ConvexGating the following way.
+
 .. code:: console
 
    git clone https://github.com/buettnerlab/convexgating.git
