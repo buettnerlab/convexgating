@@ -62,7 +62,13 @@ We recommend using Python 3.9 and setting up a new conda environment.
    conda create -n ConvexGating_env python=3.9
    conda activate ConvexGating_env
 
-Then, install ConvexGating the following way.
+Then, install ConvexGating via pip:
+
+.. code:: console
+
+   pip install convexgating
+
+or from source:
 
 .. code:: console
 
