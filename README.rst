@@ -76,7 +76,7 @@ Installation time should not exceed 5 minutes. Installation has been successfull
 Usage
 -----
 Single Target Population
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 Generating gating strategy for cells or events labeled 'cluster_A' from an AnnData object (adata) using labels found in adata.obs[cluster_string].
 
 .. code-block:: console
@@ -94,7 +94,7 @@ Generating gating strategy for cells or events labeled 'cluster_A' from an AnnDa
               save_path=save)
 
 Multiple Target Population
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 Generating a series of gating strategies for cells or events labeled 'cluster_A','cluster_B','cluster_C' from an AnnData object (adata) using labels found in adata.obs[cluster_string].
 
 .. code-block:: console
