@@ -125,6 +125,9 @@ Further Details
 ^^^^^^^^^^^^^^^^^^^^^^
 Please see the `Command-line Reference <Usage_>`_ for further details.
 
+Runtime
+^^^^^^^^^^^^^^^^^^^^^^
+In a typical dataset with 50,000 cells and 30 markers, ConvexGating runs approx. 2 mins per target cell type.
 
 
 Credits
